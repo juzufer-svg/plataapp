@@ -19,6 +19,7 @@ interface Category {
   id: string
   nombre: string
   tipo: string
+  icono?: string
 }
 
 const ICONOS = ['🛒', '🍔', '🚗', '🏠', '💊', '🎓', '👗', '💡', '📱', '🎮', '✈️', '💼', '💰', '🎁', '🏋️', '📚']
