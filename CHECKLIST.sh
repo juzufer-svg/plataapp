@@ -1,0 +1,115 @@
+#!/bin/bash
+
+# Interactive Checklist for Full Stack Setup
+
+echo "╔════════════════════════════════════════════════════════════════╗"
+echo "║          ✅ CHECKLIST - CONFIGURACIÓN FULL STACK ✅           ║"
+echo "╚════════════════════════════════════════════════════════════════╝"
+echo ""
+
+check_box() {
+    local status=$1
+    if [ "$status" = "done" ]; then
+        echo -e "☑️  $2"
+    else
+        echo -e "☐  $2"
+    fi
+}
+
+echo "📋 PREPARACIÓN"
+check_box "done" "Estructura de carpetas creada"
+check_box "done" "Dependencias configuradas"
+check_box "done" "Documentación completa lista"
+echo ""
+
+echo "🔧 SETUP LOCAL (HAZLO AHORA)"
+check_box "todo" "Ejecuta: ./setup.sh"
+check_box "todo" "Completa backend/.env con credenciales de Supabase"
+check_box "todo" "Completa frontend/.env.local con NEXT_PUBLIC_API_URL"
+echo ""
+
+echo "🗄️  SUPABASE"
+check_box "todo" "Accede a https://app.supabase.com"
+check_box "todo" "Copia SUPABASE_URL a backend/.env"
+check_box "todo" "Copia SUPABASE_KEY a backend/.env"
+check_box "todo" "Copia SUPABASE_ANON_KEY a backend/.env"
+check_box "todo" "Crea tabla de usuarios con SQL (ver QUICKSTART.md)"
+echo ""
+
+echo "🐍 BACKEND"
+check_box "todo" "Virtual env creado (venv/)"
+check_box "todo" "Dependencias Python instaladas"
+check_box "todo" "Archivo .env completado"
+check_box "todo" "Backend funciona: uvicorn app.main:app --reload"
+check_box "todo" "Accedes a http://localhost:8000/docs"
+echo ""
+
+echo "⚛️  FRONTEND"
+check_box "todo" "node_modules instalados"
+check_box "todo" "Archivo .env.local completado"
+check_box "todo" "Frontend funciona: npm run dev"
+check_box "todo" "Accedes a http://localhost:3000"
+echo ""
+
+echo "🔐 AUTENTICACIÓN"
+check_box "todo" "Página de registro visible"
+check_box "todo" "Crear cuenta nueva funciona"
+check_box "todo" "Token JWT se guarda en localStorage"
+check_box "todo" "Dashboard es accesible después del login"
+check_box "todo" "Página de perfil muestra datos del usuario"
+echo ""
+
+echo "🚀 PRODUCCIÓN"
+check_box "todo" "Conectar repo a Vercel (frontend)"
+check_box "todo" "Conectar repo a Railway (backend)"
+check_box "todo" "Variables de entorno en Vercel"
+check_box "todo" "Variables de entorno en Railway"
+echo ""
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+echo "📞 COMANDOS RÁPIDOS:"
+echo ""
+echo "Setup:"
+echo "  ./setup.sh          # Instalación inicial"
+echo "  ./validate.sh       # Validar estructura"
+echo ""
+echo "Desarrollo:"
+echo "  ./dev.sh            # Inicia Backend + Frontend"
+echo ""
+echo "Backend:"
+echo "  cd backend"
+echo "  source venv/bin/activate"
+echo "  uvicorn app.main:app --reload"
+echo ""
+echo "Frontend:"
+echo "  cd frontend"
+echo "  npm run dev"
+echo ""
+
+echo "Docker:"
+echo "  docker-compose up --build"
+echo ""
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "📖 DOCUMENTACIÓN:"
+echo ""
+echo "Start:        QUICKSTART.md"
+echo "Reference:    API_REFERENCE.md"
+echo "Structure:    STRUCTURE.md"
+echo "Full Guide:   README.md"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "🎯 OBJETIVO INMEDIATO:"
+echo ""
+echo "  1. Ejecuta: ./setup.sh"
+echo "  2. Completa credenciales Supabase en backend/.env"
+echo "  3. Ejecuta: ./dev.sh"
+echo "  4. Ve a: http://localhost:3000"
+echo "  5. ¡Regístrate y prueba la app!"
+echo ""
+echo "¡Éxito! 🚀"
+echo ""

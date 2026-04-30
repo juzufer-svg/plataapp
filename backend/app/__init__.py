@@ -1,0 +1,3 @@
+"""
+FastAPI Backend - Aplicación principal
+"""
