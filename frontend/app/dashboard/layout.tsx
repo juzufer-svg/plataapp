@@ -75,6 +75,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter()
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [hydrated, setHydrated] = useState(false)
   const { isAuthenticated, logout, user, loadAuth } = useAuthStore()
 
@@ -87,6 +88,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (hydrated && !isAuthenticated) router.push('/auth/login')
   }, [hydrated, isAuthenticated, router])
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [pathname])
+
   if (!hydrated) return null
   if (!isAuthenticated) return null
 
@@ -95,8 +101,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex h-screen bg-slate-100">
-      {/* Sidebar */}
-      <aside className={`${sidebarOpen ? 'w-60' : 'w-16'} bg-slate-900 text-white flex flex-col transition-all duration-300 fixed h-screen left-0 top-0 z-40 shadow-xl`}>
+      {/* ── Desktop Sidebar (hidden on mobile) ── */}
+      <aside className={`hidden md:flex flex-col ${sidebarOpen ? 'w-60' : 'w-16'} bg-slate-900 text-white transition-all duration-300 fixed h-screen left-0 top-0 z-40 shadow-xl`}>
         {/* Logo */}
         <div
           className="flex items-center gap-3 px-4 py-5 border-b border-slate-700/60 cursor-pointer"
@@ -167,26 +173,130 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </button>
       </aside>
 
-      {/* Main */}
-      <div className={`flex-1 flex flex-col ${sidebarOpen ? 'ml-60' : 'ml-16'} transition-all duration-300 min-h-screen`}>
+      {/* ── Mobile Drawer overlay ── */}
+      {mobileMenuOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/60 z-50"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <aside
+            className="absolute left-0 top-0 h-full w-72 bg-slate-900 text-white flex flex-col shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Drawer logo */}
+            <div className="flex items-center justify-between px-4 py-5 border-b border-slate-700/60">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <IconWallet />
+                </div>
+                <div>
+                  <p className="text-base font-bold text-white leading-tight">PlataApp</p>
+                  <p className="text-xs text-slate-400 leading-tight">Control Financiero</p>
+                </div>
+              </div>
+              <button onClick={() => setMobileMenuOpen(false)} className="text-slate-400 hover:text-white p-1">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Drawer nav */}
+            <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
+              {menuItems.map(({ href, label, Icon }) => {
+                const active = isActive(href)
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-150 ${
+                      active
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-900/30'
+                        : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    }`}
+                  >
+                    <Icon />
+                    <span className="text-sm font-medium">{label}</span>
+                  </Link>
+                )
+              })}
+            </nav>
+
+            {/* Drawer user + logout */}
+            <div className="border-t border-slate-700/60 p-3 space-y-2">
+              <div className="flex items-center gap-3 px-2 py-2 rounded-lg bg-slate-800">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold uppercase flex-shrink-0">
+                  {(user?.username || 'U').charAt(0)}
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-xs font-semibold text-white truncate">{user?.username || 'Usuario'}</p>
+                  <p className="text-xs text-slate-400">Cuenta activa</p>
+                </div>
+              </div>
+              <button
+                onClick={() => { logout(); router.push('/') }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-red-600/20 hover:text-red-400 transition-all duration-150"
+              >
+                <IconLogout />
+                <span className="text-sm font-medium">Cerrar sesión</span>
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* ── Main content ── */}
+      <div className={`flex-1 flex flex-col transition-all duration-300 min-h-screen ${sidebarOpen ? 'md:ml-60' : 'md:ml-16'}`}>
         {/* Top Header */}
-        <header className="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <header className="bg-white border-b border-slate-200 px-4 md:px-6 py-3 md:py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
           <div className="flex items-center gap-2">
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 mr-1"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
             <span className="text-lg font-bold text-gradient">PlataApp</span>
-            <span className="text-slate-300">·</span>
-            <span className="text-sm text-slate-500">Control Financiero Total</span>
+            <span className="hidden sm:inline text-slate-300">·</span>
+            <span className="hidden sm:inline text-sm text-slate-500">Control Financiero Total</span>
           </div>
-          <div className="flex items-center gap-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg px-3 py-1.5">
+          <div className="flex items-center gap-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg px-2.5 py-1.5">
             <IconProfile />
-            <span className="text-sm font-semibold">{user?.username || 'Usuario'}</span>
+            <span className="text-sm font-semibold hidden sm:inline">{user?.username || 'Usuario'}</span>
           </div>
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-3 md:p-6 pb-24 md:pb-6">
           <div className="animate-fade-in max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
+
+      {/* ── Mobile Bottom Navigation ── */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 shadow-lg">
+        <div className="grid grid-cols-6 h-16">
+          {menuItems.map(({ href, label, Icon }) => {
+            const active = isActive(href)
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                  active ? 'text-blue-600' : 'text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                <Icon />
+                <span className="text-[9px] font-medium leading-none truncate px-0.5">
+                  {label === 'Transacciones' ? 'Transacc.' : label}
+                </span>
+              </Link>
+            )
+          })}
+        </div>
+      </nav>
     </div>
   )
 }

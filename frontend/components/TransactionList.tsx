@@ -81,7 +81,7 @@ export default function TransactionList({ transactions, categories, onDelete, on
             {onEdit && (
               <button
                 onClick={() => onEdit(transaction)}
-                className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-blue-50 rounded-lg transition-all text-slate-400 hover:text-blue-500"
+                className="p-1.5 hover:bg-blue-50 rounded-lg transition-all text-slate-300 hover:text-blue-500 sm:opacity-0 sm:group-hover:opacity-100"
                 title="Editar"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +92,7 @@ export default function TransactionList({ transactions, categories, onDelete, on
             {onDelete && (
               <button
                 onClick={() => onDelete(transaction.id)}
-                className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-50 rounded-lg transition-all text-slate-400 hover:text-red-500"
+                className="p-1.5 hover:bg-red-50 rounded-lg transition-all text-slate-300 hover:text-red-500 sm:opacity-0 sm:group-hover:opacity-100"
                 title="Eliminar"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

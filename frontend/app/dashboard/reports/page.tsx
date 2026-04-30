@@ -102,11 +102,11 @@ export default function ReportsPage() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.75 19.5 8.25 12l7.5-7.5" />
             </svg>
-            Anterior
+            <span className="hidden sm:inline">Anterior</span>
           </button>
           <button onClick={() => { const d = new Date(currentMonth + '-01'); d.setMonth(d.getMonth() + 1); setCurrentMonth(d.toISOString().slice(0, 7)) }}
             className="btn-primary">
-            Siguiente
+            <span className="hidden sm:inline">Siguiente</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m8.25 4.5 7.5 7.5-7.5 7.5" />
             </svg>

@@ -187,7 +187,7 @@ export default function BudgetsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m8.25 4.5 7.5 7.5-7.5 7.5" />
             </svg>
           </button>
-          <button onClick={() => setShowForm(!showForm)} className="btn-primary">
+          <button onClick={() => setShowForm(!showForm)} className="btn-primary text-xs sm:text-sm">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showForm ? "M6 18 18 6M6 6l12 12" : "M12 4.5v15m7.5-7.5h-15"} />
             </svg>
