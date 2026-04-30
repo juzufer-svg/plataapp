@@ -70,12 +70,23 @@ if codespace_name:
     ])
     print(f"✓ Codespaces detected: {codespace_name}")
 
+# Vercel frontend URL
+vercel_url = os.getenv("VERCEL_URL", "").strip()
+if vercel_url:
+    allow_origins.append(f"https://{vercel_url}")
+
+# Always allow Vercel production domain
+allow_origins.extend([
+    "https://plataapp-omega.vercel.app",
+    "https://plataapp.vercel.app",
+])
+
 print(f"✓ CORS allowed origins: {allow_origins}")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
-    allow_origin_regex=r"https://.*\.app\.github\.dev",  # Cubre todos los puertos de Codespaces
+    allow_origin_regex=r"https://(.*\.app\.github\.dev|.*\.vercel\.app)",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
     allow_headers=["*"],
