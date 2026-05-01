@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useAuthStore } from '@/store/auth'
+import { useThemeStore } from '@/store/theme'
 import FinanzyLogo from '@/components/FinanzyLogo'
 
 // SVG Icon components
@@ -101,7 +102,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(href)
 
   return (
-    <div className="flex h-screen bg-slate-100">
+    <div className={`flex h-screen ${dark ? 'bg-slate-900' : 'bg-slate-100'}`}>
       {/* ── Desktop Sidebar (hidden on mobile) ── */}
       <aside className={`hidden md:flex flex-col ${sidebarOpen ? 'w-60' : 'w-16'} bg-slate-900 text-white transition-all duration-300 fixed h-screen left-0 top-0 z-40 shadow-xl`}>
         {/* Logo – Desktop Sidebar */}
@@ -237,35 +238,35 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* ── Main content ── */}
       <div className={`flex-1 flex flex-col transition-all duration-300 min-h-screen ${sidebarOpen ? 'md:ml-60' : 'md:ml-16'}`}>
         {/* Top Header */}
-        <header className="bg-white border-b border-slate-200 px-4 md:px-6 py-3 md:py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <header className={`border-b px-4 md:px-6 py-3 md:py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm ${dark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
           <div className="flex items-center gap-2">
             {/* Mobile hamburger */}
             <button
-              className="md:hidden p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 mr-1"
+              className={`md:hidden p-1.5 rounded-lg mr-1 ${dark ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-500 hover:bg-slate-100'}`}
               onClick={() => setMobileMenuOpen(true)}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
-            <FinanzyLogo variant="horizontal" size={26} />
-            <span className="hidden sm:inline text-slate-300">·</span>
-            <span className="hidden sm:inline text-sm text-slate-500">Control Financiero Total</span>
+            <FinanzyLogo variant="horizontal" size={26} lightText={dark} />
+            <span className={`hidden sm:inline ${dark ? 'text-slate-500' : 'text-slate-300'}`}>·</span>
+            <span className={`hidden sm:inline text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Control Financiero Total</span>
           </div>
-          <div className="flex items-center gap-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg px-2.5 py-1.5">
+          <div className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 ${dark ? 'bg-teal-900/40 text-teal-300 border border-teal-700/50' : 'bg-blue-50 text-blue-700 border border-blue-100'}`}>
             <IconProfile />
             <span className="text-sm font-semibold hidden sm:inline">{user?.username || 'Usuario'}</span>
           </div>
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-auto p-3 md:p-6 pb-24 md:pb-6">
+        <main className={`flex-1 overflow-auto p-3 md:p-6 pb-24 md:pb-6 ${dark ? 'bg-slate-900' : ''}`}>
           <div className="animate-fade-in max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
 
       {/* ── Mobile Bottom Navigation ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 shadow-lg">
+      <nav className={`md:hidden fixed bottom-0 left-0 right-0 border-t z-40 shadow-lg ${dark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
         <div className="grid grid-cols-6 h-16">
           {menuItems.map(({ href, label, Icon }) => {
             const active = isActive(href)
