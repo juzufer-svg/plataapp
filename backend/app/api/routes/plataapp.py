@@ -1,5 +1,5 @@
 """
-PlataApp routes - Transacciones, Categorías, Presupuestos, Metas
+Financy routes - Transacciones, Categorías, Presupuestos, Metas
 """
 from fastapi import APIRouter, HTTPException, Header
 from app.schemas.plataapp import (

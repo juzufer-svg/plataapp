@@ -171,7 +171,7 @@ export default function LoginPage() {
 
         {/* Bottom decorative text */}
         <p className="text-center text-white text-xs md:text-sm mt-4 md:mt-6 opacity-75">
-          ✨ PlataApp - Tu gestor financiero personal
+          ✨ Financy - Control a tu medida
         </p>
 
       {/* Animated background elements */}

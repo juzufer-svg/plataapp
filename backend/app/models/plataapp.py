@@ -1,5 +1,5 @@
 """
-Database models for PlataApp - Supabase with Demo DB fallback
+Database models for Financy - Supabase with Demo DB fallback
 """
 from typing import Optional
 import uuid

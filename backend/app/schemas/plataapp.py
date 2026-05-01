@@ -1,5 +1,5 @@
 """
-Pydantic schemas for PlataApp
+Pydantic schemas for Financy
 """
 from pydantic import BaseModel
 from typing import Optional

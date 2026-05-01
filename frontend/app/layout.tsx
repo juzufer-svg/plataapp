@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'PlataApp - Gestor Financiero Personal',
+  title: 'Financy - Control a tu medida',
   description: 'Tu solución completa para gestionar tus finanzas personales',
 }
 

@@ -30,7 +30,7 @@ export default function Home() {
           </h1>
           
           <p className="text-base sm:text-xl md:text-2xl text-blue-100 mb-8 md:mb-12 leading-relaxed px-2">
-            PlataApp es tu solución completa para controlar gastos, presupuestos y metas financieras. 
+            Financy es tu solución completa para controlar gastos, presupuestos y metas financieras. 
             Toma el control de tu dinero hoy mismo.
           </p>
 
@@ -68,7 +68,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-white border-opacity-10 px-6 md:px-12 py-8 text-center text-blue-100">
-        <p>© 2026 PlataApp. Hecho con ❤️ para ti.</p>
+        <p>© 2026 Financy. Hecho con ❤️ para ti.</p>
       </footer>
     </div>
   )
