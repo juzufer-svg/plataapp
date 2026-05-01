@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useAuthStore } from '@/store/auth'
 import { useThemeStore } from '@/store/theme'
 import FinanzyLogo from '@/components/FinanzyLogo'
+import apiClient from '@/lib/api-client'
 
 // SVG Icon components
 const IconDashboard = () => (
@@ -79,13 +80,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [hydrated, setHydrated] = useState(false)
-  const { isAuthenticated, logout, user, loadAuth } = useAuthStore()
+  const { isAuthenticated, logout, user, loadAuth, setUser } = useAuthStore()
   const { dark } = useThemeStore()
 
   useEffect(() => {
     loadAuth()
     setHydrated(true)
   }, [])
+
+  // Si el usuario ya tiene sesión pero no tiene full_name (sesión antigua), lo carga desde la API
+  useEffect(() => {
+    if (!user || user.full_name) return
+    apiClient.get('/api/v1/users/me')
+      .then(res => {
+        if (res.data?.full_name) {
+          setUser({ ...user, full_name: res.data.full_name })
+        }
+      })
+      .catch(() => {})
+  }, [user])
 
   useEffect(() => {
     if (hydrated && !isAuthenticated) router.push('/auth/login')
