@@ -46,17 +46,17 @@ export default function LoginPage() {
   return (
     <>
       {/* Card Container */}
-      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
-          {/* Header Gradient */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 md:px-8 py-8 md:py-12 text-center">
+      <div className="rounded-2xl shadow-2xl overflow-hidden" style={{background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(16px)', border: '1px solid rgba(0,184,156,0.25)'}}>
+          {/* Header – fondo semitransparente para no opacar el logo */}
+          <div className="px-6 md:px-8 py-8 md:py-12 text-center" style={{background: 'rgba(13, 27, 75, 0.45)', backdropFilter: 'blur(4px)'}}>
             <div className="flex justify-center mb-4">
               <FinanzyLogo variant="full" size={52} lightText />
             </div>
-            <p className="text-sm md:text-base text-blue-100 mt-2">Accede a tu cuenta ahora</p>
+            <p className="text-sm md:text-base mt-2" style={{color: '#00B89C'}}>Accede a tu cuenta ahora</p>
           </div>
 
           {/* Form Container */}
-          <div className="px-6 md:px-8 py-6 md:py-8">
+          <div className="px-6 md:px-8 py-6 md:py-8" style={{background: 'rgba(255,255,255,0.96)'}}>
             {/* Error Alert */}
             {error && (
               <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg animate-slide-in">
@@ -84,7 +84,9 @@ export default function LoginPage() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Tu nombre de usuario"
-                    className="w-full pl-10 md:pl-12 pr-4 py-2 md:py-3 text-sm md:text-base border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
+                    className="w-full pl-10 md:pl-12 pr-4 py-2 md:py-3 text-sm md:text-base border-2 border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400" style={{focusBorderColor: '#00B89C'}}
+                    onFocus={e => e.target.style.borderColor='#00B89C'}
+                    onBlur={e => e.target.style.borderColor=''}
                     required
                   />
                 </div>
@@ -106,7 +108,9 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Tu contraseña"
-                    className="w-full pl-10 md:pl-12 pr-10 md:pr-12 py-2 md:py-3 text-sm md:text-base border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
+                    className="w-full pl-10 md:pl-12 pr-10 md:pr-12 py-2 md:py-3 text-sm md:text-base border-2 border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
+                    onFocus={e => e.target.style.borderColor='#00B89C'}
+                    onBlur={e => e.target.style.borderColor=''}
                     required
                   />
                   <button
@@ -123,7 +127,8 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-2 md:py-3 px-4 text-sm md:text-base rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 mt-6 md:mt-8 shadow-lg flex items-center justify-center gap-2"
+                className="w-full text-white font-bold py-2 md:py-3 px-4 text-sm md:text-base rounded-lg transition-all transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 mt-6 md:mt-8 shadow-lg flex items-center justify-center gap-2"
+                style={{background: 'linear-gradient(135deg, #0D1B4B 0%, #00B89C 100%)'}}
               >
                 {loading ? (
                   <>
@@ -160,7 +165,8 @@ export default function LoginPage() {
                 ¿No tienes cuenta?{' '}
                 <Link 
                   href="/auth/register" 
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 font-bold hover:underline transition-all"
+                  className="text-transparent bg-clip-text font-bold hover:underline transition-all"
+                  style={{backgroundImage: 'linear-gradient(135deg, #0D1B4B, #00B89C)', WebkitBackgroundClip: 'text'}}
                 >
                   Regístrate aquí
                 </Link>
