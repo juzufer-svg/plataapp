@@ -50,7 +50,7 @@ export default function LoginPage() {
           {/* Header Gradient */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 md:px-8 py-8 md:py-12 text-center">
             <div className="flex justify-center mb-4">
-              <FinancyLogo variant="full" size={52} lightText />
+              <FinanzyLogo variant="full" size={52} lightText />
             </div>
             <p className="text-sm md:text-base text-blue-100 mt-2">Accede a tu cuenta ahora</p>
           </div>
