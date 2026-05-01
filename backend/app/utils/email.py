@@ -1,5 +1,5 @@
 """
-Email utility - sends verification codes via SMTP
+Email utility - sends verification codes via Resend API or SMTP
 """
 import smtplib
 import random
@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Optional
+import httpx
 from app.core.config import settings
 
 # In-memory store: { email: { code, expires_at } }
@@ -100,28 +101,53 @@ def _build_html(code: str) -> str:
 
 
 def send_verification_email(to_email: str, code: str) -> bool:
-    """Send verification code email. Returns True on success."""
-    if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
-        # Dev mode: print code to console
-        print(f"\n{'='*40}")
-        print(f"[DEV] Verification code for {to_email}: {code}")
-        print(f"{'='*40}\n")
-        return True
+    """Send verification code email. Tries Resend → SMTP → dev console."""
 
-    from_addr = settings.FROM_EMAIL or settings.SMTP_USER
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"{code} es tu código de Finanzy"
-    msg["From"] = f"{settings.FROM_NAME} <{from_addr}>"
-    msg["To"] = to_email
-
-    msg.attach(MIMEText(_build_html(code), "html", "utf-8"))
-
-    try:
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=10) as server:
-            server.starttls()
-            server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-            server.sendmail(from_addr, [to_email], msg.as_string())
-        return True
-    except Exception as e:
-        print(f"[EMAIL ERROR] {e}")
+    # ── 1. Resend API ─────────────────────────────────────────────────────────
+    if settings.RESEND_API_KEY:
+        from_addr = settings.FROM_EMAIL or "onboarding@resend.dev"
+        from_label = f"{settings.FROM_NAME} <{from_addr}>"
+        try:
+            resp = httpx.post(
+                "https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {settings.RESEND_API_KEY}"},
+                json={
+                    "from": from_label,
+                    "to": [to_email],
+                    "subject": f"{code} es tu código de Finanzy",
+                    "html": _build_html(code),
+                },
+                timeout=15,
+            )
+            if resp.status_code in (200, 201):
+                print(f"[EMAIL] Sent via Resend to {to_email}")
+                return True
+            print(f"[EMAIL ERROR] Resend responded {resp.status_code}: {resp.text}")
+        except Exception as e:
+            print(f"[EMAIL ERROR] Resend exception: {e}")
         return False
+
+    # ── 2. SMTP ───────────────────────────────────────────────────────────────
+    if settings.SMTP_USER and settings.SMTP_PASSWORD:
+        from_addr = settings.FROM_EMAIL or settings.SMTP_USER
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"{code} es tu código de Finanzy"
+        msg["From"] = f"{settings.FROM_NAME} <{from_addr}>"
+        msg["To"] = to_email
+        msg.attach(MIMEText(_build_html(code), "html", "utf-8"))
+        try:
+            with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=10) as server:
+                server.starttls()
+                server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+                server.sendmail(from_addr, [to_email], msg.as_string())
+            print(f"[EMAIL] Sent via SMTP to {to_email}")
+            return True
+        except Exception as e:
+            print(f"[EMAIL ERROR] SMTP: {e}")
+            return False
+
+    # ── 3. Dev mode ───────────────────────────────────────────────────────────
+    print(f"\n{'='*40}")
+    print(f"[DEV] Verification code for {to_email}: {code}")
+    print(f"{'='*40}\n")
+    return True

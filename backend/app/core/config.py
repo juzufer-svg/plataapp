@@ -41,7 +41,10 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = Field(default="postgresql://user:password@localhost/dbname")
     
-    # SMTP / Email
+    # Resend (preferred)
+    RESEND_API_KEY: str = Field(default="")
+
+    # SMTP / Email (fallback)
     SMTP_HOST: str = Field(default="smtp.gmail.com")
     SMTP_PORT: int = Field(default=587)
     SMTP_USER: str = Field(default="")
