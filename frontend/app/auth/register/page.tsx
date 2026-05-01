@@ -174,6 +174,7 @@ export default function RegisterPage() {
                     required
                     onFocus={e => e.target.style.borderColor='#00B89C'}
                     onBlur={e => e.target.style.borderColor=''}
+                  />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
