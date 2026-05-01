@@ -43,10 +43,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-full">
-        {/* Card Container */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
+    <>
+      {/* Card Container */}
+      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
           {/* Header Gradient */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 md:px-8 py-8 md:py-12 text-center">
             <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-white bg-opacity-20 rounded-full mb-4 mx-auto">
@@ -176,7 +175,6 @@ export default function LoginPage() {
         <p className="text-center text-white text-xs md:text-sm mt-4 md:mt-6 opacity-75">
           ✨ PlataApp - Tu gestor financiero personal
         </p>
-      </div>
 
       {/* Animated background elements */}
       <style>{`
@@ -195,6 +193,6 @@ export default function LoginPage() {
           animation: slide-in 0.3s ease-out;
         }
       `}</style>
-    </div>
+    </>
   )
 }
