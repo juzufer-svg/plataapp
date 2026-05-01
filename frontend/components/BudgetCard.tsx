@@ -35,9 +35,9 @@ export default function BudgetCard({ categoria, limite, gastado, onEdit, onDelet
           </div>
           <p className="text-xs text-slate-400">Presupuesto mensual</p>
         </div>
-        <div className="flex-shrink-0 text-right ml-3">
+        <div className="flex-shrink-0 text-right ml-2 min-w-0 max-w-[45%]">
           <p className="text-xs text-slate-400 uppercase tracking-wide">Límite</p>
-          <p className="text-lg font-bold text-slate-900">${limite.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
+          <p className="text-sm sm:text-lg font-bold text-slate-900 truncate">${limite.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
         </div>
       </div>
 

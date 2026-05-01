@@ -55,15 +55,15 @@ export default function GoalProgressCard({ nombre, objetivo, actual, fechaObjeti
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
         {[
           { label: 'Ahorrado', value: `$${actual.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: 'text-blue-600' },
           { label: 'Objetivo', value: `$${objetivo.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: 'text-slate-900' },
           { label: 'Falta', value: `$${Math.max(0, objetivo - actual).toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: completed ? 'text-emerald-600' : 'text-amber-600' },
         ].map(({ label, value, color }) => (
-          <div key={label} className="bg-slate-50 rounded-lg p-2.5 text-center">
-            <p className="text-xs text-slate-400 font-medium">{label}</p>
-            <p className={`text-xs font-bold mt-0.5 ${color}`}>{value}</p>
+          <div key={label} className="bg-slate-50 rounded-lg p-2 text-center min-w-0">
+            <p className="text-[10px] sm:text-xs text-slate-400 font-medium truncate">{label}</p>
+            <p className={`text-[10px] sm:text-xs font-bold mt-0.5 truncate ${color}`}>{value}</p>
           </div>
         ))}
       </div>

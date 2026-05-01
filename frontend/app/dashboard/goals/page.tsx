@@ -182,18 +182,18 @@ export default function GoalsPage() {
 
       {/* Summary row */}
       {goals.length > 0 && (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="card p-4 border-l-4 border-blue-400">
-            <p className="text-xs text-slate-500">Total Objetivo</p>
-            <p className="text-lg font-bold text-slate-900 mt-0.5">${totalObjetivo.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <div className="card p-3 sm:p-4 border-l-4 border-blue-400 min-w-0">
+            <p className="text-[10px] sm:text-xs text-slate-500 truncate">Total Objetivo</p>
+            <p className="text-sm sm:text-lg font-bold text-slate-900 mt-0.5 truncate">${totalObjetivo.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
           </div>
-          <div className="card p-4 border-l-4 border-emerald-400">
-            <p className="text-xs text-slate-500">Total Ahorrado</p>
-            <p className="text-lg font-bold text-emerald-600 mt-0.5">${totalAhorrado.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
+          <div className="card p-3 sm:p-4 border-l-4 border-emerald-400 min-w-0">
+            <p className="text-[10px] sm:text-xs text-slate-500 truncate">Total Ahorrado</p>
+            <p className="text-sm sm:text-lg font-bold text-emerald-600 mt-0.5 truncate">${totalAhorrado.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
           </div>
-          <div className="card p-4 border-l-4 border-violet-400">
-            <p className="text-xs text-slate-500">Completadas</p>
-            <p className="text-lg font-bold text-violet-600 mt-0.5">{completadas} / {goals.length}</p>
+          <div className="card p-3 sm:p-4 border-l-4 border-violet-400 min-w-0">
+            <p className="text-[10px] sm:text-xs text-slate-500 truncate">Completadas</p>
+            <p className="text-sm sm:text-lg font-bold text-violet-600 mt-0.5">{completadas} / {goals.length}</p>
           </div>
         </div>
       )}
