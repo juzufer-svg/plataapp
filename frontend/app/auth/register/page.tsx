@@ -71,23 +71,22 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-500 to-blue-400 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
-        {/* Card Container */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
-          {/* Header Gradient */}
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white bg-opacity-20 rounded-full mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
-            </div>
-            <h1 className="text-3xl font-bold text-white mb-2">¡Únete Ahora!</h1>
-            <p className="text-purple-100">Crea tu cuenta de PlataApp</p>
+    <>
+      {/* Card Container */}
+      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
+        {/* Header Gradient */}
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 md:px-8 py-8 md:py-10 text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-white bg-opacity-20 rounded-full mb-4 mx-auto">
+            <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
           </div>
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-1 md:mb-2">¡Únete Ahora!</h1>
+          <p className="text-sm md:text-base text-purple-100">Crea tu cuenta de PlataApp</p>
+        </div>
 
-          {/* Form Container */}
-          <div className="px-8 py-8">
+        {/* Form Container */}
+        <div className="px-6 md:px-8 py-6 md:py-8">
             {/* Error Alert */}
             {error && (
               <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg animate-slide-in">
@@ -218,26 +217,25 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Login Link */}
-            <div className="text-center">
-              <p className="text-gray-600 text-sm">
-                ¿Ya tienes cuenta?{' '}
-                <Link 
-                  href="/auth/login" 
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 font-bold hover:underline transition-all"
-                >
-                  Inicia sesión
-                </Link>
-              </p>
-            </div>
+          {/* Login Link */}
+          <div className="text-center">
+            <p className="text-gray-600 text-xs md:text-sm">
+              ¿Ya tienes cuenta?{' '}
+              <Link 
+                href="/auth/login" 
+                className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 font-bold hover:underline transition-all"
+              >
+                Inicia sesión
+              </Link>
+            </p>
           </div>
         </div>
-
-        {/* Bottom decorative text */}
-        <p className="text-center text-white text-sm mt-6 opacity-75">
-          💳 Gestiona tus finanzas personales fácilmente
-        </p>
       </div>
+
+      {/* Bottom decorative text */}
+      <p className="text-center text-white text-xs md:text-sm mt-4 md:mt-6 opacity-75">
+        💳 Gestiona tus finanzas personales fácilmente
+      </p>
 
       {/* Animated background elements */}
       <style>{`
@@ -256,6 +254,6 @@ export default function RegisterPage() {
           animation: slide-in 0.3s ease-out;
         }
       `}</style>
-    </div>
+    </>
   )
 }

@@ -1,0 +1,45 @@
+====================================================
+  PLATAAPP - INFRAESTRUCTURA DE PRODUCCIÓN
+====================================================
+
+FRONTEND
+  Plataforma : Vercel
+  Framework  : Next.js (carpeta /frontend)
+  Estado     : Siempre online (plan Hobby gratuito)
+  URL        : tu-app.vercel.app
+
+BACKEND
+  Plataforma : Railway
+  Framework  : FastAPI / Python (carpeta /backend)
+  Deploy     : Dockerfile + railway.json
+  Healthcheck: GET /health
+  Plan gratis: 500 horas/mes (~21 días corridos)
+  Plan Pro   : ~$5/mes → uptime 24/7 ilimitado
+  URL        : tu-backend.railway.app
+
+BASE DE DATOS
+  Plataforma : Supabase
+  Plan gratis: Siempre online, pero se PAUSA si el
+               proyecto está inactivo más de 7 días
+  Plan Pro   : ~$25/mes → sin pausas
+
+REPOSITORIO
+  GitHub     : juzufer-svg/plataapp
+  Rama       : main
+  Local      : /workspaces/codespaces-nextjs
+
+====================================================
+  NOTAS
+====================================================
+
+- Si el backend no responde → revisar horas en Railway
+  (railway.app → proyecto → pestaña Usage)
+
+- Si la BD no conecta → reactivar proyecto en Supabase
+  (supabase.com → tu proyecto → Restore)
+
+- Para producción 24/7 sin interrupciones:
+    Railway Pro  ~$5/mes
+    Supabase Pro ~$25/mes
+
+====================================================
