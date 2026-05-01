@@ -155,8 +155,17 @@ class CategoriaDB:
             # Seed default categories for new user if none exist
             if not cats:
                 seed = [{"id": str(uuid.uuid4()), "usuario_id": usuario_id, **c} for c in CategoriaDB._DEFAULT_SEED]
-                seeded = client.table("categorias").insert(seed).execute()
-                cats = seeded.data
+                cats = []
+                for item in seed:
+                    try:
+                        seeded = client.table("categorias").insert(item).execute()
+                        if seeded.data:
+                            cats.extend(seeded.data)
+                    except Exception as seed_err:
+                        print(f"[Supabase] categorias.seed error: {seed_err}")
+                if not cats:
+                    # seed falló completamente, devolver defaults sin persistir
+                    cats = seed
             return cats
         except Exception as e:
             print(f"[Supabase] categorias.obtener error: {e}")

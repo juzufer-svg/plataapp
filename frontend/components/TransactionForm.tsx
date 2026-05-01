@@ -6,14 +6,29 @@ interface TransactionFormProps {
   onSuccess?: () => void
 }
 
+const DEFAULT_CATEGORIES = [
+  { id: 'default-salario',        nombre: 'Salario',          icono: '💼', tipo: 'ingreso' },
+  { id: 'default-freelance',      nombre: 'Freelance',        icono: '💻', tipo: 'ingreso' },
+  { id: 'default-otros-ingresos', nombre: 'Otros ingresos',   icono: '💰', tipo: 'ingreso' },
+  { id: 'default-comida',         nombre: 'Comida',           icono: '🍔', tipo: 'gasto' },
+  { id: 'default-transporte',     nombre: 'Transporte',       icono: '🚗', tipo: 'gasto' },
+  { id: 'default-hogar',          nombre: 'Hogar',            icono: '🏠', tipo: 'gasto' },
+  { id: 'default-salud',          nombre: 'Salud',            icono: '💊', tipo: 'gasto' },
+  { id: 'default-entretenimiento',nombre: 'Entretenimiento',  icono: '🎮', tipo: 'gasto' },
+  { id: 'default-ropa',           nombre: 'Ropa',             icono: '👗', tipo: 'gasto' },
+  { id: 'default-educacion',      nombre: 'Educación',        icono: '🎓', tipo: 'gasto' },
+]
+
 export default function TransactionForm({ categories, onSuccess }: TransactionFormProps) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const today = new Date()
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
   const [formData, setFormData] = useState({
     categoria_id: '',
     monto: '',
     descripcion: '',
-    fecha: new Date().toISOString().split('T')[0],
+    fecha: todayStr,
     tipo: 'gasto'
   })
 
@@ -31,7 +46,9 @@ export default function TransactionForm({ categories, onSuccess }: TransactionFo
         ...formData,
         monto: parseFloat(formData.monto)
       }, { headers: { Authorization: `Bearer ${token}` } })
-      setFormData({ categoria_id: '', monto: '', descripcion: '', fecha: new Date().toISOString().split('T')[0], tipo: 'gasto' })
+      const t2 = new Date()
+      const t2str = `${t2.getFullYear()}-${String(t2.getMonth() + 1).padStart(2, '0')}-${String(t2.getDate()).padStart(2, '0')}`
+      setFormData({ categoria_id: '', monto: '', descripcion: '', fecha: t2str, tipo: 'gasto' })
       setSuccess(true)
       setTimeout(() => setSuccess(false), 2000)
       if (onSuccess) onSuccess()
@@ -42,7 +59,8 @@ export default function TransactionForm({ categories, onSuccess }: TransactionFo
     }
   }
 
-  const filteredCategories = categories.filter(cat => cat.tipo === formData.tipo)
+  const effectiveCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES
+  const filteredCategories = effectiveCategories.filter(cat => cat.tipo === formData.tipo)
 
   return (
     <div className="card p-5">
@@ -103,11 +121,11 @@ export default function TransactionForm({ categories, onSuccess }: TransactionFo
           <select name="categoria_id" value={formData.categoria_id} onChange={handleChange} required className="input-field">
             <option value="">Selecciona una categoría</option>
             {filteredCategories.map(cat => (
-              <option key={cat.id} value={cat.id}>{cat.nombre}</option>
+              <option key={cat.id} value={cat.id}>{cat.icono ? `${cat.icono} ${cat.nombre}` : cat.nombre}</option>
             ))}
           </select>
-          {filteredCategories.length === 0 && (
-            <p className="text-xs text-amber-600 mt-1">No hay categorías para este tipo</p>
+          {categories.length === 0 && (
+            <p className="text-xs text-blue-600 mt-1">Usando categorías predeterminadas. Puedes crear las tuyas con el botón Categorías.</p>
           )}
         </div>
 
