@@ -36,7 +36,7 @@ export default function LoginPage() {
       } else {
         // logged in directly
         setToken(data.access_token)
-        setUser({ id: data.user_id, email })
+        setUser({ id: data.user_id, email, full_name: data.full_name })
         document.cookie = `token=${data.access_token}; path=/; max-age=1800; SameSite=Lax`
         router.push('/dashboard')
       }
@@ -57,7 +57,7 @@ export default function LoginPage() {
     try {
       const res = await apiClient.post('/api/v1/auth/verify-email', { email, code: fullCode })
       setToken(res.data.access_token)
-      setUser({ id: res.data.user_id, email })
+      setUser({ id: res.data.user_id, email, full_name: res.data.full_name })
       document.cookie = `token=${res.data.access_token}; path=/; max-age=1800; SameSite=Lax`
       router.push('/dashboard')
     } catch (err: any) {

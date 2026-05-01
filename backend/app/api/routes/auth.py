@@ -68,7 +68,7 @@ async def verify_email(data: VerifyEmailRequest):
         data={"sub": user["id"]},
         expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
     )
-    return Token(access_token=access_token, user_id=user["id"])
+    return Token(access_token=access_token, user_id=user["id"], full_name=user.get("full_name"))
 
 
 # ── Resend code ───────────────────────────────────────────────────────────────

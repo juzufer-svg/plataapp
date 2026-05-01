@@ -148,8 +148,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {(user?.email || 'U').charAt(0).toUpperCase()}
               </div>
               <div className="overflow-hidden">
-                <p className="text-xs font-semibold text-white truncate">{user?.email || 'Usuario'}</p>
-                <p className="text-xs text-slate-400">Cuenta activa</p>
+                <p className="text-xs font-semibold text-white truncate">{user?.full_name || user?.email || 'Usuario'}</p>
+                <p className="text-xs text-slate-400 truncate">{user?.email || ''}</p>
               </div>
             </div>
           )}
@@ -217,11 +217,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="border-t border-slate-700/60 p-3 space-y-2">
               <div className="flex items-center gap-3 px-2 py-2 rounded-lg bg-slate-800">
                 <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold uppercase flex-shrink-0">
-                  {(user?.email || 'U').charAt(0).toUpperCase()}
+                  {(user?.full_name || user?.email || 'U').charAt(0).toUpperCase()}
                 </div>
                 <div className="overflow-hidden">
-                  <p className="text-xs font-semibold text-white truncate">{user?.email || 'Usuario'}</p>
-                  <p className="text-xs text-slate-400">Cuenta activa</p>
+                  <p className="text-xs font-semibold text-white truncate">{user?.full_name || user?.email || 'Usuario'}</p>
+                  <p className="text-xs text-slate-400 truncate">{user?.email || ''}</p>
                 </div>
               </div>
               <button
@@ -255,8 +255,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className={`hidden sm:inline text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Control Financiero Total</span>
           </div>
           <div className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 ${dark ? 'bg-teal-900/40 text-teal-300 border border-teal-700/50' : 'bg-blue-50 text-blue-700 border border-blue-100'}`}>
-            <IconProfile />
-            <span className="text-sm font-semibold hidden sm:inline">{user?.email || 'Usuario'}</span>
+            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${ dark ? 'bg-teal-600 text-white' : 'bg-blue-600 text-white'}`}>
+              {(user?.full_name || user?.email || 'U').charAt(0).toUpperCase()}
+            </div>
+            <div className="hidden sm:flex flex-col leading-none">
+              <span className="text-sm font-semibold">{user?.full_name || user?.email || 'Usuario'}</span>
+              {user?.full_name && <span className={`text-xs ${dark ? 'text-teal-400/70' : 'text-blue-500/70'}`}>{user.email}</span>}
+            </div>
           </div>
         </header>
 
