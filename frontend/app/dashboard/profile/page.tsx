@@ -30,10 +30,10 @@ export default function ProfilePage() {
         {/* Avatar card */}
         <div className="card p-6 flex flex-col items-center text-center gap-4">
           <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl font-bold text-white shadow-lg">
-            {(user?.username || 'U').charAt(0).toUpperCase()}
+            {(user?.email || 'U').charAt(0).toUpperCase()}
           </div>
           <div>
-            <p className="text-lg font-bold text-slate-900">{user?.username || 'Usuario'}</p>
+            <p className="text-lg font-bold text-slate-900">{user?.full_name || user?.email || 'Usuario'}</p>
             <span className="inline-flex items-center gap-1.5 mt-1 px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
               Cuenta activa
@@ -59,7 +59,7 @@ export default function ProfilePage() {
           ) : userInfo ? (
             <div className="space-y-4">
               {[
-                { label: 'Nombre de usuario', value: userInfo.username, icon: (
+                { label: 'Correo electrónico', value: userInfo.email, icon: (
                   <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                   </svg>

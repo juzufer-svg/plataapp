@@ -41,6 +41,14 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = Field(default="postgresql://user:password@localhost/dbname")
     
+    # SMTP / Email
+    SMTP_HOST: str = Field(default="smtp.gmail.com")
+    SMTP_PORT: int = Field(default=587)
+    SMTP_USER: str = Field(default="")
+    SMTP_PASSWORD: str = Field(default="")
+    FROM_EMAIL: str = Field(default="")
+    FROM_NAME: str = Field(default="Finanzy")
+
     # Environment
     ENVIRONMENT: str = Field(default="development")
     DEBUG: bool = Field(default=True)

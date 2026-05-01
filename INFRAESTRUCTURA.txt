@@ -1,5 +1,5 @@
 ====================================================
-  PLATAAPP - INFRAESTRUCTURA DE PRODUCCIÓN
+  FINANZY - INFRAESTRUCTURA DE PRODUCCIÓN
 ====================================================
 
 FRONTEND

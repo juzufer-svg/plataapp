@@ -1,19 +1,31 @@
 """
 Authentication schemas
 """
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 
 
 class UserRegistration(BaseModel):
     """User registration request"""
-    username: str = Field(..., min_length=3, max_length=50)
+    email: EmailStr
+    full_name: str = Field(..., min_length=2, max_length=100)
     password: str = Field(..., min_length=6)
 
 
 class UserLogin(BaseModel):
     """User login request"""
-    username: str
+    email: EmailStr
     password: str
+
+
+class VerifyEmailRequest(BaseModel):
+    """Verify email with code"""
+    email: EmailStr
+    code: str = Field(..., min_length=6, max_length=6)
+
+
+class ResendCodeRequest(BaseModel):
+    """Resend verification code"""
+    email: EmailStr
 
 
 class Token(BaseModel):
@@ -23,10 +35,17 @@ class Token(BaseModel):
     user_id: str
 
 
+class PendingVerification(BaseModel):
+    """Response when email verification is required"""
+    status: str = "pending"
+    message: str
+
+
 class UserResponse(BaseModel):
     """User response"""
     id: str
-    username: str
-    
+    email: str
+    full_name: str | None = None
+
     class Config:
         from_attributes = True

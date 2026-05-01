@@ -2,12 +2,18 @@
 
 import { create } from 'zustand'
 
+interface AuthUser {
+  id: string
+  email: string
+  full_name?: string
+}
+
 interface AuthStore {
   token: string | null
-  user: any | null
+  user: AuthUser | null
   isAuthenticated: boolean
   setToken: (token: string) => void
-  setUser: (user: any) => void
+  setUser: (user: AuthUser) => void
   logout: () => void
   loadAuth: () => void
 }

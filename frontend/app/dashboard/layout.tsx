@@ -145,10 +145,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {sidebarOpen && (
             <div className="flex items-center gap-3 px-2 py-2 rounded-lg bg-slate-800">
               <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold uppercase flex-shrink-0">
-                {(user?.username || 'U').charAt(0)}
+                {(user?.email || 'U').charAt(0).toUpperCase()}
               </div>
               <div className="overflow-hidden">
-                <p className="text-xs font-semibold text-white truncate">{user?.username || 'Usuario'}</p>
+                <p className="text-xs font-semibold text-white truncate">{user?.email || 'Usuario'}</p>
                 <p className="text-xs text-slate-400">Cuenta activa</p>
               </div>
             </div>
@@ -217,10 +217,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="border-t border-slate-700/60 p-3 space-y-2">
               <div className="flex items-center gap-3 px-2 py-2 rounded-lg bg-slate-800">
                 <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold uppercase flex-shrink-0">
-                  {(user?.username || 'U').charAt(0)}
+                  {(user?.email || 'U').charAt(0).toUpperCase()}
                 </div>
                 <div className="overflow-hidden">
-                  <p className="text-xs font-semibold text-white truncate">{user?.username || 'Usuario'}</p>
+                  <p className="text-xs font-semibold text-white truncate">{user?.email || 'Usuario'}</p>
                   <p className="text-xs text-slate-400">Cuenta activa</p>
                 </div>
               </div>
@@ -256,7 +256,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
           <div className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 ${dark ? 'bg-teal-900/40 text-teal-300 border border-teal-700/50' : 'bg-blue-50 text-blue-700 border border-blue-100'}`}>
             <IconProfile />
-            <span className="text-sm font-semibold hidden sm:inline">{user?.username || 'Usuario'}</span>
+            <span className="text-sm font-semibold hidden sm:inline">{user?.email || 'Usuario'}</span>
           </div>
         </header>
 
