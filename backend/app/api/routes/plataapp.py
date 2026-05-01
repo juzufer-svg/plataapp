@@ -4,7 +4,7 @@ PlataApp routes - Transacciones, Categorías, Presupuestos, Metas
 from fastapi import APIRouter, HTTPException, Header
 from app.schemas.plataapp import (
     TransaccionCreate, TransaccionResponse, ResumenTransacciones,
-    CategoriaCreate, CategoriaResponse,
+    CategoriaCreate, CategoriaUpdate, CategoriaResponse,
     PresupuestoCreate, PresupuestoResponse, PresupuestoUpdate,
     MetaCreate, MetaResponse, ActualizarMeta
 )
@@ -96,6 +96,22 @@ async def crear_categoria(categoria: CategoriaCreate, authorization: str = Heade
 async def obtener_categorias(authorization: str = Header(...)):
     usuario_id = get_user_id(authorization)
     return await CategoriaDB.obtener_por_usuario(usuario_id)
+
+
+@router.put("/categorias/{categoria_id}", response_model=CategoriaResponse)
+async def actualizar_categoria(categoria_id: str, datos: CategoriaUpdate, authorization: str = Header(...)):
+    get_user_id(authorization)
+    actualizada = await CategoriaDB.actualizar(categoria_id, datos.nombre, datos.icono, datos.tipo)
+    if not actualizada:
+        raise HTTPException(status_code=404, detail="Categoría no encontrada")
+    return actualizada
+
+
+@router.delete("/categorias/{categoria_id}")
+async def eliminar_categoria(categoria_id: str, authorization: str = Header(...)):
+    get_user_id(authorization)
+    await CategoriaDB.eliminar(categoria_id)
+    return {"message": "Categoría eliminada"}
 
 
 # ==================== PRESUPUESTOS ====================

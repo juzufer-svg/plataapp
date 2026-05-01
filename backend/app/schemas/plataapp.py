@@ -43,6 +43,13 @@ class CategoriaCreate(BaseModel):
     tipo: str  # 'ingreso' o 'gasto'
 
 
+class CategoriaUpdate(BaseModel):
+    """Actualizar categoría"""
+    nombre: str
+    icono: str
+    tipo: str
+
+
 class CategoriaResponse(BaseModel):
     """Respuesta de categoría"""
     id: str

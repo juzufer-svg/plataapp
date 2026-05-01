@@ -152,6 +152,22 @@ class DemoCategoriaDB:
         """Get category by ID"""
         return DemoCategoriaDB._categorias.get(categoria_id)
 
+    @staticmethod
+    async def actualizar(categoria_id: str, nombre: str, icono: str, tipo: str) -> dict:
+        """Update category"""
+        if categoria_id in DemoCategoriaDB._categorias:
+            DemoCategoriaDB._categorias[categoria_id].update({"nombre": nombre, "icono": icono, "tipo": tipo})
+            return DemoCategoriaDB._categorias[categoria_id]
+        return None
+
+    @staticmethod
+    async def eliminar(categoria_id: str) -> bool:
+        """Delete category"""
+        if categoria_id in DemoCategoriaDB._categorias:
+            del DemoCategoriaDB._categorias[categoria_id]
+            return True
+        return False
+
 
 class DemoPresupuestoDB:
     """In-memory presupuestos database"""

@@ -183,6 +183,30 @@ class CategoriaDB:
             print(f"[Supabase] categorias.obtener_por_id error: {e}")
             return await DemoCategoriaDB.obtener_por_id(categoria_id)
 
+    @staticmethod
+    async def actualizar(categoria_id: str, nombre: str, icono: str, tipo: str) -> dict:
+        if not _supabase_ok():
+            return await DemoCategoriaDB.actualizar(categoria_id, nombre, icono, tipo)
+        try:
+            client = SupabaseDB.get_client()
+            result = client.table("categorias").update({"nombre": nombre, "icono": icono, "tipo": tipo}).eq("id", categoria_id).execute()
+            return result.data[0] if result.data else None
+        except Exception as e:
+            print(f"[Supabase] categorias.actualizar error: {e}")
+            return await DemoCategoriaDB.actualizar(categoria_id, nombre, icono, tipo)
+
+    @staticmethod
+    async def eliminar(categoria_id: str) -> bool:
+        if not _supabase_ok():
+            return await DemoCategoriaDB.eliminar(categoria_id)
+        try:
+            client = SupabaseDB.get_client()
+            client.table("categorias").delete().eq("id", categoria_id).execute()
+            return True
+        except Exception as e:
+            print(f"[Supabase] categorias.eliminar error: {e}")
+            return await DemoCategoriaDB.eliminar(categoria_id)
+
 
 class PresupuestoDB:
 

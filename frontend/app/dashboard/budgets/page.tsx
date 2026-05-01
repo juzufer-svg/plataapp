@@ -171,17 +171,17 @@ export default function BudgetsPage() {
         <div className="page-header mb-0">
           <h1 className="page-title">Presupuestos</h1>
           <p className="page-subtitle capitalize">
-            {new Date(currentMonth + '-01').toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+            {new Date(parseInt(currentMonth.split('-')[0]), parseInt(currentMonth.split('-')[1]) - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => { const d = new Date(currentMonth + '-01'); d.setMonth(d.getMonth() - 1); setCurrentMonth(d.toISOString().slice(0, 7)) }}
+          <button onClick={() => { const [y, m] = currentMonth.split('-').map(Number); const d = new Date(y, m - 2); setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`) }}
             className="btn-secondary">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.75 19.5 8.25 12l7.5-7.5" />
             </svg>
           </button>
-          <button onClick={() => { const d = new Date(currentMonth + '-01'); d.setMonth(d.getMonth() + 1); setCurrentMonth(d.toISOString().slice(0, 7)) }}
+          <button onClick={() => { const [y, m] = currentMonth.split('-').map(Number); const d = new Date(y, m); setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`) }}
             className="btn-secondary">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m8.25 4.5 7.5 7.5-7.5 7.5" />
