@@ -215,7 +215,8 @@ export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
-  const [currentMonth, setCurrentMonth] = useState(new Date().toISOString().slice(0, 7))
+  const _now = new Date()
+  const [currentMonth, setCurrentMonth] = useState(`${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '0')}`)
   const [showCategoryModal, setShowCategoryModal] = useState(false)
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
 
