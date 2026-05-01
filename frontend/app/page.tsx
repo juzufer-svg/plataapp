@@ -1,13 +1,14 @@
 import Link from 'next/link'
+import FinancyLogo from '@/components/FinancyLogo'
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex flex-col">
       {/* Navigation */}
       <nav className="flex justify-between items-center px-4 md:px-12 py-4 md:py-6">
-        <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
-          <div className="text-xl md:text-3xl">💳</div>
-          <span className="text-base md:text-2xl font-bold text-white">PlataApp</span>
+        <div className="flex items-center shrink-0">
+          <FinancyLogo variant="horizontal" size={36} lightText className="hidden md:flex" />
+          <FinancyLogo variant="horizontal" size={28} lightText className="flex md:hidden" />
         </div>
         <div className="flex items-center gap-1.5 md:gap-4 shrink-0">
           <Link href="/auth/login" className="px-2.5 md:px-6 py-1.5 md:py-2 text-xs md:text-base text-white hover:text-blue-200 transition font-medium whitespace-nowrap">

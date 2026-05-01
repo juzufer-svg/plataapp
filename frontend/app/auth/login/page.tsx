@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import apiClient from '@/lib/api-client'
 import { useAuthStore } from '@/store/auth'
+import FinancyLogo from '@/components/FinancyLogo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -48,13 +49,10 @@ export default function LoginPage() {
       <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
           {/* Header Gradient */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 md:px-8 py-8 md:py-12 text-center">
-            <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-white bg-opacity-20 rounded-full mb-4 mx-auto">
-              <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+            <div className="flex justify-center mb-4">
+              <FinancyLogo variant="full" size={52} lightText />
             </div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1 md:mb-2">Bienvenido</h1>
-            <p className="text-sm md:text-base text-blue-100">Accede a tu cuenta ahora</p>
+            <p className="text-sm md:text-base text-blue-100 mt-2">Accede a tu cuenta ahora</p>
           </div>
 
           {/* Form Container */}

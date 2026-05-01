@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useAuthStore } from '@/store/auth'
+import FinancyLogo from '@/components/FinancyLogo'
 
 // SVG Icon components
 const IconDashboard = () => (
@@ -103,19 +104,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="flex h-screen bg-slate-100">
       {/* ── Desktop Sidebar (hidden on mobile) ── */}
       <aside className={`hidden md:flex flex-col ${sidebarOpen ? 'w-60' : 'w-16'} bg-slate-900 text-white transition-all duration-300 fixed h-screen left-0 top-0 z-40 shadow-xl`}>
-        {/* Logo */}
+        {/* Logo – Desktop Sidebar */}
         <div
           className="flex items-center gap-3 px-4 py-5 border-b border-slate-700/60 cursor-pointer"
           onClick={() => router.push('/dashboard')}
         >
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <IconWallet />
-          </div>
-          {sidebarOpen && (
-            <div className="overflow-hidden">
-              <p className="text-base font-bold text-white leading-tight">PlataApp</p>
-              <p className="text-xs text-slate-400 leading-tight">Control Financiero</p>
-            </div>
+          {sidebarOpen ? (
+            <FinancyLogo variant="horizontal" size={32} lightText />
+          ) : (
+            <FinancyLogo variant="icon" size={32} />
           )}
         </div>
 
@@ -185,15 +182,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             {/* Drawer logo */}
             <div className="flex items-center justify-between px-4 py-5 border-b border-slate-700/60">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <IconWallet />
-                </div>
-                <div>
-                  <p className="text-base font-bold text-white leading-tight">PlataApp</p>
-                  <p className="text-xs text-slate-400 leading-tight">Control Financiero</p>
-                </div>
-              </div>
+              <FinancyLogo variant="horizontal" size={30} lightText />
               <button onClick={() => setMobileMenuOpen(false)} className="text-slate-400 hover:text-white p-1">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 18 6M6 6l12 12" />
@@ -259,7 +248,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
-            <span className="text-lg font-bold text-gradient">PlataApp</span>
+            <FinancyLogo variant="horizontal" size={26} />
             <span className="hidden sm:inline text-slate-300">·</span>
             <span className="hidden sm:inline text-sm text-slate-500">Control Financiero Total</span>
           </div>

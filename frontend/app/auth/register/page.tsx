@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import apiClient from '@/lib/api-client'
 import { useAuthStore } from '@/store/auth'
+import FinancyLogo from '@/components/FinancyLogo'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -76,13 +77,9 @@ export default function RegisterPage() {
       <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
         {/* Header Gradient */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 md:px-8 py-8 md:py-10 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-white bg-opacity-20 rounded-full mb-4 mx-auto">
-            <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
+          <div className="flex justify-center mb-3">
+            <FinancyLogo variant="full" size={52} lightText />
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-1 md:mb-2">¡Únete Ahora!</h1>
-          <p className="text-sm md:text-base text-purple-100">Crea tu cuenta de PlataApp</p>
         </div>
 
         {/* Form Container */}
