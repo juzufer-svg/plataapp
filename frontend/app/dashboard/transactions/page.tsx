@@ -397,13 +397,13 @@ export default function TransactionsPage() {
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="page-header mb-0">
-            <h1 className="page-title">Transacciones</h1>
-            <p className="page-subtitle capitalize">
-              {new Date(parseInt(currentMonth.split('-')[0]), parseInt(currentMonth.split('-')[1]) - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
-            </p>
-          </div>
+        <div className="page-header mb-0">
+          <h1 className="page-title">Transacciones</h1>
+          <p className="page-subtitle capitalize">
+            {new Date(parseInt(currentMonth.split('-')[0]), parseInt(currentMonth.split('-')[1]) - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setShowCategoriesManager(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-semibold shadow-md hover:opacity-90 transition-all"
@@ -414,10 +414,8 @@ export default function TransactionsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6h.008v.008H6V6Z" />
             </svg>
-            Categorías
+            Crear Categorías
           </button>
-        </div>
-        <div className="flex items-center gap-2">
           <button
             onClick={() => { const [y, m] = currentMonth.split('-').map(Number); const d = new Date(y, m - 2); setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`) }}
             className="btn-secondary">
