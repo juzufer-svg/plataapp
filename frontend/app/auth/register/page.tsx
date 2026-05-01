@@ -74,16 +74,16 @@ export default function RegisterPage() {
   return (
     <>
       {/* Card Container */}
-      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
-        {/* Header Gradient */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 md:px-8 py-8 md:py-10 text-center">
+      <div className="rounded-2xl shadow-2xl overflow-hidden" style={{background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(16px)', border: '1px solid rgba(0,184,156,0.25)'}}>
+        {/* Header */}
+        <div className="px-6 md:px-8 py-8 md:py-10 text-center" style={{background: 'rgba(13, 27, 75, 0.45)', backdropFilter: 'blur(4px)'}}>
           <div className="flex justify-center mb-3">
             <FinanzyLogo variant="full" size={52} lightText />
           </div>
         </div>
 
         {/* Form Container */}
-        <div className="px-6 md:px-8 py-6 md:py-8">
+        <div className="px-6 md:px-8 py-6 md:py-8" style={{background: 'rgba(255,255,255,0.96)'}}>
             {/* Error Alert */}
             {error && (
               <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg animate-slide-in">
@@ -111,7 +111,9 @@ export default function RegisterPage() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Elige un nombre único"
-                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
+                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
+                    onFocus={e => e.target.style.borderColor='#00B89C'}
+                    onBlur={e => e.target.style.borderColor=''}
                     required
                     minLength={3}
                   />
@@ -135,9 +137,11 @@ export default function RegisterPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Elige una contraseña segura"
-                    className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
+                    className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
                     required
                     minLength={6}
+                    onFocus={e => e.target.style.borderColor='#00B89C'}
+                    onBlur={e => e.target.style.borderColor=''}
                   />
                   <button
                     type="button"
@@ -166,9 +170,10 @@ export default function RegisterPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Repite tu contraseña"
-                    className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
+                    className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white placeholder-gray-400"
                     required
-                  />
+                    onFocus={e => e.target.style.borderColor='#00B89C'}
+                    onBlur={e => e.target.style.borderColor=''}
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -183,7 +188,8 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 mt-8 shadow-lg flex items-center justify-center gap-2"
+                className="w-full text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 mt-8 shadow-lg flex items-center justify-center gap-2"
+                style={{background: 'linear-gradient(135deg, #0D1B4B 0%, #00B89C 100%)'}}
               >
                 {loading ? (
                   <>
@@ -220,7 +226,8 @@ export default function RegisterPage() {
               ¿Ya tienes cuenta?{' '}
               <Link 
                 href="/auth/login" 
-                className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 font-bold hover:underline transition-all"
+                className="text-transparent bg-clip-text font-bold hover:underline transition-all"
+                style={{backgroundImage: 'linear-gradient(135deg, #0D1B4B, #00B89C)', WebkitBackgroundClip: 'text'}}
               >
                 Inicia sesión
               </Link>
@@ -231,7 +238,7 @@ export default function RegisterPage() {
 
       {/* Bottom decorative text */}
       <p className="text-center text-white text-xs md:text-sm mt-4 md:mt-6 opacity-75">
-        💳 Gestiona tus finanzas personales fácilmente
+        ✨ Finanzy - Control a tu medida
       </p>
 
       {/* Animated background elements */}
