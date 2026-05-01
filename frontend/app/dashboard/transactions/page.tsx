@@ -127,7 +127,7 @@ function CategoriesManagerModal({ onClose, onChanged }: { onClose: () => void; o
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 flex-shrink-0">
-          <h3 className="text-base font-bold text-slate-900">Categorías</h3>
+          <h3 className="text-base font-bold text-slate-900">Crear Categorías</h3>
           <div className="flex items-center gap-2">
             <button onClick={openCreate}
               className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors">
