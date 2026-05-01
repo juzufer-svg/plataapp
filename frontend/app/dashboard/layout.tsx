@@ -267,13 +267,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className={`hidden sm:inline ${dark ? 'text-slate-500' : 'text-slate-300'}`}>·</span>
             <span className={`hidden sm:inline text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Control Financiero Total</span>
           </div>
-          <div className={`flex items-center gap-2.5 rounded-lg px-3 py-1.5 ${dark ? 'bg-teal-900/40 text-teal-300 border border-teal-700/50' : 'bg-blue-50 text-blue-700 border border-blue-100'}`}>
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${dark ? 'bg-teal-600 text-white' : 'bg-blue-600 text-white'}`}>
+          <div className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 ${dark ? 'bg-teal-900/40 text-teal-300 border border-teal-700/50' : 'bg-blue-50 text-blue-700 border border-blue-100'}`}>
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${dark ? 'bg-teal-600 text-white' : 'bg-blue-600 text-white'}`}>
               {(user?.full_name || user?.email || 'U').charAt(0).toUpperCase()}
             </div>
-            <div className="hidden sm:flex flex-col leading-tight">
-              <span className={`text-[10px] font-medium ${dark ? 'text-teal-400/70' : 'text-blue-500/70'}`}>Bienvenido,</span>
-              <span className="text-sm font-bold">{user?.full_name || user?.email || 'Usuario'}</span>
+            <div className="flex flex-col leading-tight">
+              <span className={`text-[9px] font-medium ${dark ? 'text-teal-400/70' : 'text-blue-500/70'}`}>Bienvenido,</span>
+              <span className="text-xs font-bold truncate max-w-[110px] sm:max-w-[180px]">{user?.full_name || user?.email || 'Usuario'}</span>
             </div>
           </div>
         </header>
