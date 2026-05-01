@@ -101,33 +101,9 @@ def _build_html(code: str) -> str:
 
 
 def send_verification_email(to_email: str, code: str) -> bool:
-    """Send verification code email. Tries Resend → SMTP → dev console."""
+    """Send verification code email. Tries Gmail SMTP → dev console."""
 
-    # ── 1. Resend API ─────────────────────────────────────────────────────────
-    if settings.RESEND_API_KEY:
-        from_addr = settings.FROM_EMAIL or "onboarding@resend.dev"
-        from_label = f"{settings.FROM_NAME} <{from_addr}>"
-        try:
-            resp = httpx.post(
-                "https://api.resend.com/emails",
-                headers={"Authorization": f"Bearer {settings.RESEND_API_KEY}"},
-                json={
-                    "from": from_label,
-                    "to": [to_email],
-                    "subject": f"{code} es tu código de Finanzy",
-                    "html": _build_html(code),
-                },
-                timeout=15,
-            )
-            if resp.status_code in (200, 201):
-                print(f"[EMAIL] Sent via Resend to {to_email}")
-                return True
-            print(f"[EMAIL ERROR] Resend responded {resp.status_code}: {resp.text}")
-        except Exception as e:
-            print(f"[EMAIL ERROR] Resend exception: {e}")
-        return False
-
-    # ── 2. SMTP ───────────────────────────────────────────────────────────────
+    # ── 1. Gmail SMTP ─────────────────────────────────────────────────────────
     if settings.SMTP_USER and settings.SMTP_PASSWORD:
         from_addr = settings.FROM_EMAIL or settings.SMTP_USER
         msg = MIMEMultipart("alternative")
@@ -140,13 +116,13 @@ def send_verification_email(to_email: str, code: str) -> bool:
                 server.starttls()
                 server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
                 server.sendmail(from_addr, [to_email], msg.as_string())
-            print(f"[EMAIL] Sent via SMTP to {to_email}")
+            print(f"[EMAIL] Sent via Gmail SMTP to {to_email}")
             return True
         except Exception as e:
-            print(f"[EMAIL ERROR] SMTP: {e}")
+            print(f"[EMAIL ERROR] Gmail SMTP: {e}")
             return False
 
-    # ── 3. Dev mode ───────────────────────────────────────────────────────────
+    # ── 2. Dev mode ───────────────────────────────────────────────────────────
     print(f"\n{'='*40}")
     print(f"[DEV] Verification code for {to_email}: {code}")
     print(f"{'='*40}\n")
