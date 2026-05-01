@@ -109,45 +109,55 @@ body {
 
 /* ── Dark mode overrides ── */
 .dark body {
-  @apply bg-slate-900;
+  @apply bg-slate-900 text-slate-100;
 }
 
-.dark .card {
-  @apply bg-slate-800 border-slate-700/60;
-}
+/* Texto base oscuro → blanco en dark */
+.dark .text-slate-900 { color: #f1f5f9 !important; }
+.dark .text-slate-800 { color: #e2e8f0 !important; }
+.dark .text-slate-700 { color: #cbd5e1 !important; }
+.dark .text-slate-600 { color: #94a3b8 !important; }
+.dark .text-slate-500 { color: #94a3b8 !important; }
 
-.dark .card-hover {
-  @apply bg-slate-800 border-slate-700/60;
-}
+/* Fondos claros dentro de cards → oscuros */
+.dark .bg-slate-50  { background-color: #1e293b !important; }
+.dark .bg-slate-100 { background-color: #1e293b !important; }
+.dark .bg-white     { background-color: #1e293b !important; }
 
-.dark .page-title {
-  @apply text-white;
-}
+/* Bordes claros */
+.dark .border-slate-100 { border-color: #334155 !important; }
+.dark .border-slate-200 { border-color: #334155 !important; }
+.dark .divide-slate-100 > * + * { border-color: #334155 !important; }
+.dark .divide-slate-200 > * + * { border-color: #334155 !important; }
 
-.dark .page-subtitle {
-  @apply text-slate-400;
-}
+/* Elementos bg de iconos */
+.dark .bg-blue-50   { background-color: rgba(37,99,235,0.15)  !important; }
+.dark .bg-green-50  { background-color: rgba(22,163,74,0.15)  !important; }
+.dark .bg-red-50    { background-color: rgba(220,38,38,0.15)  !important; }
+.dark .bg-purple-50 { background-color: rgba(147,51,234,0.15) !important; }
+.dark .bg-amber-50  { background-color: rgba(217,119,6,0.15)  !important; }
+.dark .bg-orange-50 { background-color: rgba(234,88,12,0.15)  !important; }
+.dark .bg-teal-50   { background-color: rgba(20,184,166,0.15) !important; }
 
-.dark .section-title {
-  @apply text-white;
-}
-
+/* Cards y stat cards */
+.dark .card,
+.dark .card-hover,
 .dark .stat-card {
   @apply bg-slate-800 border-slate-700/60;
 }
 
+/* Page texts */
+.dark .page-title    { @apply text-white; }
+.dark .page-subtitle { @apply text-slate-400; }
+.dark .section-title { @apply text-white; }
+
+/* Controles */
 .dark .btn-secondary {
   @apply bg-slate-700 text-slate-200 border-slate-600 hover:bg-slate-600;
 }
-
 .dark .input-field {
   @apply bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400 focus:border-teal-400;
 }
+.dark .label { @apply text-slate-300; }
 
-.dark .label {
-  @apply text-slate-300;
-}
-
-.dark .text-gradient {
-  @apply from-teal-400 to-blue-400;
-}
+.dark .text-gradient { @apply from-teal-400 to-blue-400; }
