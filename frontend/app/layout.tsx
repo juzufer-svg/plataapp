@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Financy - Control a tu medida',
+  title: 'Finanzy - Control a tu medida',
   description: 'Tu solución completa para gestionar tus finanzas personales',
 }
 

@@ -1,5 +1,5 @@
 """
-Pydantic schemas for Financy
+Pydantic schemas for Finanzy
 """
 from pydantic import BaseModel
 from typing import Optional

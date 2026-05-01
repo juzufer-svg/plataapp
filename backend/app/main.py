@@ -96,7 +96,7 @@ app.add_middleware(
 # Include Routes
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["authentication"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
-app.include_router(plataapp.router, prefix="/api/v1", tags=["financy"])
+app.include_router(plataapp.router, prefix="/api/v1", tags=["finanzy"])
 
 @app.get("/")
 async def root():

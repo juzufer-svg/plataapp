@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-interface FinancyLogoProps {
+interface FinanzyLogoProps {
   /** Modo: 'full' muestra icono + nombre + tagline, 'icon' solo el icono, 'horizontal' icono + nombre */
   variant?: 'full' | 'icon' | 'horizontal'
   /** Tamaño del icono en píxeles */
@@ -10,12 +10,12 @@ interface FinancyLogoProps {
   className?: string
 }
 
-export default function FinancyLogo({
+export default function FinanzyLogo({
   variant = 'horizontal',
   size = 48,
   lightText = false,
   className = '',
-}: FinancyLogoProps) {
+}: FinanzyLogoProps) {
   const textColor = lightText ? 'text-white' : 'text-[#0D1B4B]'
   const taglineColor = lightText ? 'text-teal-300' : 'text-[#00B89C]'
 
@@ -26,7 +26,7 @@ export default function FinancyLogo({
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      aria-label="Financy logo icon"
+      aria-label="Finanzy logo icon"
     >
       <defs>
         <linearGradient id="fGrad" x1="0" y1="0" x2="1" y2="1">
@@ -74,7 +74,7 @@ export default function FinancyLogo({
 
   if (variant === 'icon') {
     return (
-      <span className={className} aria-label="Financy">
+      <span className={className} aria-label="Finanzy">
         <Icon />
       </span>
     )
@@ -85,7 +85,7 @@ export default function FinancyLogo({
       <div className={`flex items-center gap-2 ${className}`}>
         <Icon />
         <span className={`font-extrabold tracking-tight leading-none ${textColor}`} style={{ fontSize: size * 0.6 }}>
-          Financy
+          Finanzy
         </span>
       </div>
     )
@@ -96,7 +96,7 @@ export default function FinancyLogo({
     <div className={`flex flex-col items-center gap-1 ${className}`}>
       <Icon />
       <span className={`font-extrabold tracking-tight leading-none ${textColor}`} style={{ fontSize: size * 0.65 }}>
-        Financy
+        Finanzy
       </span>
       <span className={`font-semibold tracking-[0.2em] uppercase text-xs ${taglineColor}`}>
         Control a tu medida

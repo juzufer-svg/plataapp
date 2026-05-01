@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import FinancyLogo from '@/components/FinancyLogo'
+import FinanzyLogo from '@/components/FinanzyLogo'
 
 export default function Home() {
   return (
@@ -7,8 +7,8 @@ export default function Home() {
       {/* Navigation */}
       <nav className="flex justify-between items-center px-4 md:px-12 py-4 md:py-6">
         <div className="flex items-center shrink-0">
-          <FinancyLogo variant="horizontal" size={36} lightText className="hidden md:flex" />
-          <FinancyLogo variant="horizontal" size={28} lightText className="flex md:hidden" />
+          <FinanzyLogo variant="horizontal" size={36} lightText className="hidden md:flex" />
+          <FinanzyLogo variant="horizontal" size={28} lightText className="flex md:hidden" />
         </div>
         <div className="flex items-center gap-1.5 md:gap-4 shrink-0">
           <Link href="/auth/login" className="px-2.5 md:px-6 py-1.5 md:py-2 text-xs md:text-base text-white hover:text-blue-200 transition font-medium whitespace-nowrap">
@@ -30,7 +30,7 @@ export default function Home() {
           </h1>
           
           <p className="text-base sm:text-xl md:text-2xl text-blue-100 mb-8 md:mb-12 leading-relaxed px-2">
-            Financy es tu solución completa para controlar gastos, presupuestos y metas financieras. 
+            Finanzy es tu solución completa para controlar gastos, presupuestos y metas financieras. 
             Toma el control de tu dinero hoy mismo.
           </p>
 
@@ -68,7 +68,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-white border-opacity-10 px-6 md:px-12 py-8 text-center text-blue-100">
-        <p>© 2026 Financy. Hecho con ❤️ para ti.</p>
+        <p>© 2026 Finanzy. Hecho con ❤️ para ti.</p>
       </footer>
     </div>
   )

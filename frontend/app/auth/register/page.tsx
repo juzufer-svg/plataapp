@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import apiClient from '@/lib/api-client'
 import { useAuthStore } from '@/store/auth'
-import FinancyLogo from '@/components/FinancyLogo'
+import FinanzyLogo from '@/components/FinanzyLogo'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -78,7 +78,7 @@ export default function RegisterPage() {
         {/* Header Gradient */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 md:px-8 py-8 md:py-10 text-center">
           <div className="flex justify-center mb-3">
-            <FinancyLogo variant="full" size={52} lightText />
+            <FinanzyLogo variant="full" size={52} lightText />
           </div>
         </div>
 

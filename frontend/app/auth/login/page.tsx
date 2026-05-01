@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import apiClient from '@/lib/api-client'
 import { useAuthStore } from '@/store/auth'
-import FinancyLogo from '@/components/FinancyLogo'
+import FinanzyLogo from '@/components/FinanzyLogo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -171,7 +171,7 @@ export default function LoginPage() {
 
         {/* Bottom decorative text */}
         <p className="text-center text-white text-xs md:text-sm mt-4 md:mt-6 opacity-75">
-          ✨ Financy - Control a tu medida
+          ✨ Finanzy - Control a tu medida
         </p>
 
       {/* Animated background elements */}
