@@ -80,6 +80,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [hydrated, setHydrated] = useState(false)
   const { isAuthenticated, logout, user, loadAuth } = useAuthStore()
+  const { dark } = useThemeStore()
 
   useEffect(() => {
     loadAuth()
