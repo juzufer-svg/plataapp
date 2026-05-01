@@ -10,7 +10,8 @@ import { useRouter } from 'next/navigation'
 export default function Dashboard() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
-  const [currentMonth, setCurrentMonth] = useState(new Date().toISOString().slice(0, 7))
+  const now = new Date()
+  const [currentMonth, setCurrentMonth] = useState(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`)
   const [transactions, setTransactions] = useState([])
   const [categories, setCategories] = useState([])
 
@@ -37,15 +38,15 @@ export default function Dashboard() {
   }
 
   const handlePreviousMonth = () => {
-    const date = new Date(currentMonth + '-01')
-    date.setMonth(date.getMonth() - 1)
-    setCurrentMonth(date.toISOString().slice(0, 7))
+    const [y, m] = currentMonth.split('-').map(Number)
+    const d = new Date(y, m - 2)
+    setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
   }
 
   const handleNextMonth = () => {
-    const date = new Date(currentMonth + '-01')
-    date.setMonth(date.getMonth() + 1)
-    setCurrentMonth(date.toISOString().slice(0, 7))
+    const [y, m] = currentMonth.split('-').map(Number)
+    const d = new Date(y, m)
+    setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
   }
 
   if (loading) {
@@ -123,7 +124,7 @@ export default function Dashboard() {
         <div>
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Período</p>
           <p className="text-xl font-bold text-slate-900 mt-0.5 capitalize">
-            {new Date(currentMonth + '-01').toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+            {new Date(parseInt(currentMonth.split('-')[0]), parseInt(currentMonth.split('-')[1]) - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
           </p>
         </div>
         <div className="flex items-center gap-2">
