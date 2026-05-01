@@ -1,13 +1,9 @@
 """
-Email utility - sends verification codes via Resend API or SMTP
+Email utility - sends verification codes via SendGrid API
 """
-import smtplib
 import random
 import string
 from datetime import datetime, timedelta
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from typing import Optional
 import httpx
 from app.core.config import settings
 
@@ -101,26 +97,33 @@ def _build_html(code: str) -> str:
 
 
 def send_verification_email(to_email: str, code: str) -> bool:
-    """Send verification code email. Tries Gmail SMTP → dev console."""
+    """Send verification code email via SendGrid API."""
 
-    # ── 1. Gmail SMTP ─────────────────────────────────────────────────────────
-    if settings.SMTP_USER and settings.SMTP_PASSWORD:
-        from_addr = settings.FROM_EMAIL or settings.SMTP_USER
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"{code} es tu código de Finanzy"
-        msg["From"] = f"{settings.FROM_NAME} <{from_addr}>"
-        msg["To"] = to_email
-        msg.attach(MIMEText(_build_html(code), "html", "utf-8"))
+    # ── 1. SendGrid API ───────────────────────────────────────────────────────
+    if settings.SENDGRID_API_KEY:
+        from_addr = settings.FROM_EMAIL or "noreply@finanzy.app"
         try:
-            with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=10) as server:
-                server.starttls()
-                server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-                server.sendmail(from_addr, [to_email], msg.as_string())
-            print(f"[EMAIL] Sent via Gmail SMTP to {to_email}")
-            return True
+            resp = httpx.post(
+                "https://api.sendgrid.com/v3/mail/send",
+                headers={
+                    "Authorization": f"Bearer {settings.SENDGRID_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "personalizations": [{"to": [{"email": to_email}]}],
+                    "from": {"email": from_addr, "name": settings.FROM_NAME},
+                    "subject": f"{code} es tu código de Finanzy",
+                    "content": [{"type": "text/html", "value": _build_html(code)}],
+                },
+                timeout=15,
+            )
+            if resp.status_code == 202:
+                print(f"[EMAIL] Sent via SendGrid to {to_email}")
+                return True
+            print(f"[EMAIL ERROR] SendGrid responded {resp.status_code}: {resp.text}")
         except Exception as e:
-            print(f"[EMAIL ERROR] Gmail SMTP: {e}")
-            return False
+            print(f"[EMAIL ERROR] SendGrid exception: {e}")
+        return False
 
     # ── 2. Dev mode ───────────────────────────────────────────────────────────
     print(f"\n{'='*40}")
