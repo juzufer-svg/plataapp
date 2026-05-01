@@ -68,7 +68,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-white border-opacity-10 px-6 md:px-12 py-8 text-center text-blue-100">
-        <p>© 2026 Finanzy. Hecho con ❤️ para ti.</p>
+        <p>© 2026 Finanzy. Versión 1.0 - Powered by Julian Zuñiga.</p>
       </footer>
     </div>
   )
