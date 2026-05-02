@@ -37,3 +37,31 @@ async def get_current_user_info(authorization: str = Header(...)):
         )
     
     return UserResponse(**user)
+
+
+@router.delete("/me", status_code=204)
+async def delete_current_user(authorization: str = Header(...)):
+    """Delete the authenticated user's account permanently"""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated"
+        )
+
+    token = authorization.split(" ")[1]
+    payload = decode_token(token)
+
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token"
+        )
+
+    user_id = payload.get("sub")
+    deleted = await UserDB.delete_by_id(user_id)
+
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )

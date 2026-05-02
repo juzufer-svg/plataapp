@@ -40,11 +40,20 @@ async def init_demo_users():
             else:
                 print(f"✓ Demo user already exists: {username}")
 
+async def cleanup_unverified_loop():
+    """Background task: every 10 minutes delete inactive users older than 1 hour."""
+    from app.models.user import UserDB
+    while True:
+        await asyncio.sleep(600)  # 10 minutes
+        await UserDB.delete_unverified_expired()
+
 @app.on_event("startup")
 async def startup_event():
     """Run on startup"""
     await init_demo_users()
+    asyncio.create_task(cleanup_unverified_loop())
     print("🚀 Application started - using Demo DB for authentication")
+    print("🧹 Cleanup task started: unverified accounts older than 1 hour will be removed every 10 min")
 
 # CORS Middleware Configuration
 # IMPORTANT: allow_origins=["*"] is INCOMPATIBLE with allow_credentials=True

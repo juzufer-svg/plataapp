@@ -87,3 +87,41 @@ class UserDB:
         except Exception as e:
             print(f"[UserDB.activate] {e}")
             return False
+
+    @staticmethod
+    async def delete_by_id(user_id: str) -> bool:
+        if not UserDB._is_supabase_available():
+            return False
+        try:
+            client = SupabaseDB.get_client()
+            client.table(UserDB.TABLE_NAME)\
+                .delete()\
+                .eq("id", user_id)\
+                .execute()
+            return True
+        except Exception as e:
+            print(f"[UserDB.delete_by_id] {e}")
+            return False
+
+    @staticmethod
+    async def delete_unverified_expired() -> int:
+        """Delete inactive users whose registration is older than 1 hour.
+        Returns the number of deleted records."""
+        if not UserDB._is_supabase_available():
+            return 0
+        try:
+            from datetime import datetime, timezone, timedelta
+            cutoff = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
+            client = SupabaseDB.get_client()
+            result = client.table(UserDB.TABLE_NAME)\
+                .delete()\
+                .eq("is_active", False)\
+                .lt("created_at", cutoff)\
+                .execute()
+            deleted = len(result.data) if result.data else 0
+            if deleted:
+                print(f"🧹 [cleanup] Eliminados {deleted} usuario(s) sin verificar (>1 hora)")
+            return deleted
+        except Exception as e:
+            print(f"[UserDB.delete_unverified_expired] {e}")
+            return 0

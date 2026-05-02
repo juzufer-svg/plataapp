@@ -1,15 +1,21 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/auth'
 import { useThemeStore } from '@/store/theme'
 import apiClient from '@/lib/api-client'
 
 export default function ProfilePage() {
-  const { user } = useAuthStore()
+  const router = useRouter()
+  const { user, logout } = useAuthStore()
   const { dark, toggle } = useThemeStore()
   const [userInfo, setUserInfo] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
 
   useEffect(() => {
     if (!user) return
@@ -18,6 +24,19 @@ export default function ProfilePage() {
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [user])
+
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      await apiClient.delete('/api/v1/users/me')
+      logout()
+      router.push('/')
+    } catch {
+      setDeleteError('No se pudo eliminar la cuenta. Intenta de nuevo.')
+      setDeleting(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -136,6 +155,88 @@ export default function ProfilePage() {
           </button>
         </div>
       </div>
+
+      {/* Zona de peligro */}
+      <div className="card p-5 border border-red-200 dark:border-red-900/50">
+        <h2 className="text-sm font-bold text-red-600 dark:text-red-400 mb-4 pb-3 border-b border-red-100 dark:border-red-900/40 flex items-center gap-2">
+          <div className="w-6 h-6 bg-red-100 dark:bg-red-900/40 rounded flex items-center justify-center">
+            <svg className="w-3.5 h-3.5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+          </div>
+          Zona de peligro
+        </h2>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Eliminar cuenta</p>
+            <p className="text-xs text-slate-400 mt-0.5">Esta acción es permanente e irreversible</p>
+          </div>
+          <button
+            onClick={() => { setShowDeleteModal(true); setDeleteConfirm(''); setDeleteError('') }}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
+          >
+            Eliminar cuenta
+          </button>
+        </div>
+      </div>
+
+      {/* Modal de confirmación */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5">
+            {/* Ícono de advertencia */}
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="w-14 h-14 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center">
+                <svg className="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">¿Eliminar tu cuenta?</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                  Esta acción es <span className="font-semibold text-red-600">completamente irreversible</span>. Se borrarán todos tus datos, transacciones, presupuestos y metas. No hay vuelta atrás.
+                </p>
+              </div>
+            </div>
+
+            {/* Confirmación escribiendo el correo */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                Para confirmar, escribe tu correo: <span className="text-slate-900 dark:text-white font-mono">{user?.email}</span>
+              </label>
+              <input
+                type="email"
+                value={deleteConfirm}
+                onChange={e => setDeleteConfirm(e.target.value)}
+                placeholder="Tu correo electrónico"
+                className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+            </div>
+
+            {deleteError && (
+              <p className="text-xs text-red-600 font-medium">{deleteError}</p>
+            )}
+
+            {/* Botones */}
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+                className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleting || deleteConfirm.toLowerCase() !== (user?.email || '').toLowerCase()}
+                className="flex-1 px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+              >
+                {deleting ? 'Eliminando…' : 'Sí, eliminar mi cuenta'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )
