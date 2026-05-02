@@ -229,6 +229,16 @@ export default function RegisterPage() {
                 <span className="font-semibold text-gray-800">{email}</span>
               </p>
 
+              {/* Aviso SPAM */}
+              <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl border-2 border-amber-400 bg-amber-50">
+                <span className="text-xl leading-none mt-0.5">⚠️</span>
+                <p className="text-sm font-semibold text-amber-800">
+                  ¿No ves el correo?{' '}
+                  <span className="underline decoration-2 decoration-amber-500">Revisa tu bandeja de SPAM</span>
+                  {' '}o correo no deseado.
+                </p>
+              </div>
+
               <div className="flex justify-center gap-2" onPaste={handleCodePaste}>
                 {code.map((digit, i) => (
                   <input key={i}
