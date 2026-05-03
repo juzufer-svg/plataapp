@@ -1,4 +1,4 @@
-const CACHE_KEY = 'fx_rates_v1'
+const CACHE_KEY = 'fx_rates_v2'
 const CACHE_TTL = 4 * 60 * 60 * 1000 // 4 hours
 
 // Fallback rates relative to USD (used if API fails)
@@ -7,7 +7,7 @@ export const FALLBACK_RATES: Record<string, number> = {
   EUR: 0.92,
   MXN: 17.5,
   ARS: 1200,
-  COP: 4150,
+  COP: 3626,
   CLP: 950,
 }
 
@@ -22,11 +22,18 @@ export async function fetchRates(): Promise<Record<string, number>> {
     } catch {}
   }
   try {
-    const res = await fetch(
-      'https://api.frankfurter.app/latest?base=USD&symbols=USD,EUR,MXN,ARS,COP,CLP'
-    )
+    const res = await fetch('https://open.er-api.com/v6/latest/USD')
+    if (!res.ok) throw new Error(`FX API error ${res.status}`)
     const data = await res.json()
-    const rates: Record<string, number> = { USD: 1, ...data.rates }
+    if (data?.result !== 'success' || !data?.rates) throw new Error('Invalid FX payload')
+    const rates: Record<string, number> = {
+      USD: 1,
+      EUR: data.rates.EUR,
+      MXN: data.rates.MXN,
+      ARS: data.rates.ARS,
+      COP: data.rates.COP,
+      CLP: data.rates.CLP,
+    }
     if (typeof window !== 'undefined') {
       localStorage.setItem(CACHE_KEY, JSON.stringify({ rates, ts: Date.now() }))
     }
