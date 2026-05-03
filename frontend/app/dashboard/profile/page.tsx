@@ -4,26 +4,35 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/auth'
 import { useThemeStore } from '@/store/theme'
+import { useCurrencyStore, AVAILABLE_CURRENCIES } from '@/store/currency'
 import apiClient from '@/lib/api-client'
 
 export default function ProfilePage() {
   const router = useRouter()
   const { user, logout } = useAuthStore()
   const { dark, toggle } = useThemeStore()
+  const { currency, setCurrency } = useCurrencyStore()
   const [userInfo, setUserInfo] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState('')
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState('')
+  const [updatingCurrency, setUpdatingCurrency] = useState(false)
 
   useEffect(() => {
     if (!user) return
     apiClient.get('/api/v1/users/me')
-      .then(res => setUserInfo(res.data))
+      .then(res => {
+        setUserInfo(res.data)
+        // Cargar la moneda del usuario
+        if (res.data.currency) {
+          setCurrency(res.data.currency)
+        }
+      })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [user])
+  }, [user, setCurrency])
 
   async function handleDeleteAccount() {
     setDeleting(true)
@@ -35,6 +44,19 @@ export default function ProfilePage() {
     } catch {
       setDeleteError('No se pudo eliminar la cuenta. Intenta de nuevo.')
       setDeleting(false)
+    }
+  }
+
+  async function handleCurrencyChange(newCurrency: string) {
+    setUpdatingCurrency(true)
+    try {
+      const res = await apiClient.put('/api/v1/users/me/currency', { currency: newCurrency })
+      setCurrency(newCurrency)
+      setUserInfo(res.data)
+    } catch (error) {
+      console.error('Error actualizando moneda:', error)
+    } finally {
+      setUpdatingCurrency(false)
     }
   }
 
@@ -153,6 +175,36 @@ export default function ProfilePage() {
               </svg>
             </span>
           </button>
+        </div>
+      </div>
+
+      {/* Moneda */}
+      <div className="card p-5">
+        <h2 className="text-sm font-bold text-slate-900 dark:text-white mb-4 pb-3 border-b border-slate-100 dark:border-slate-700 flex items-center gap-2">
+          <div className="w-6 h-6 bg-green-100 dark:bg-green-900/40 rounded flex items-center justify-center">
+            <svg className="w-3.5 h-3.5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          Moneda
+        </h2>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Moneda de tu cuenta</p>
+            <p className="text-xs text-slate-400 mt-0.5">Selecciona tu moneda preferida para mostrar todos los valores</p>
+          </div>
+          <select
+            value={currency}
+            onChange={(e) => handleCurrencyChange(e.target.value)}
+            disabled={updatingCurrency}
+            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {AVAILABLE_CURRENCIES.map(curr => (
+              <option key={curr.code} value={curr.code}>
+                {curr.code} - {curr.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 

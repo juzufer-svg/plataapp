@@ -47,6 +47,12 @@ class UserResponse(BaseModel):
     id: str
     email: str
     full_name: str | None = None
+    currency: str = "USD"
 
     class Config:
         from_attributes = True
+
+
+class UpdateCurrencyRequest(BaseModel):
+    """Update user currency request"""
+    currency: str = Field(..., pattern="^(USD|EUR|MXN|ARS|COP|CLP)$")
