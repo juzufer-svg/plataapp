@@ -83,7 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [hydrated, setHydrated] = useState(false)
   const { isAuthenticated, logout, user, loadAuth, setUser } = useAuthStore()
   const { dark } = useThemeStore()
-  const { loadRates, initBaseCurrency } = useCurrencyStore()
+  const { loadRates } = useCurrencyStore()
 
   useEffect(() => {
     loadAuth()
@@ -98,10 +98,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       .then(res => {
         if (res.data?.full_name) {
           setUser({ ...user, full_name: res.data.full_name })
-        }
-        // Establecer moneda base una sola vez (la moneda en que se guardaron los datos)
-        if (res.data?.currency) {
-          initBaseCurrency(res.data.currency)
         }
       })
       .catch(() => {})

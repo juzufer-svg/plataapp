@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const router = useRouter()
   const { user, logout } = useAuthStore()
   const { dark, toggle } = useThemeStore()
-  const { currency, setCurrency, initBaseCurrency } = useCurrencyStore()
+  const { currency, setCurrency } = useCurrencyStore()
   const [userInfo, setUserInfo] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -40,7 +40,6 @@ export default function ProfilePage() {
         setUserInfo(res.data)
         if (res.data.currency) {
           setCurrencyRef.current(res.data.currency)
-          initBaseCurrency(res.data.currency)
         }
       })
       .catch(console.error)
