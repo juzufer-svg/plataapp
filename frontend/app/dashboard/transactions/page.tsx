@@ -5,6 +5,7 @@ import axios from 'axios'
 import TransactionForm from '@/components/TransactionForm'
 import TransactionList from '@/components/TransactionList'
 import { useRouter } from 'next/navigation'
+import { useCurrencyStore } from '@/store/currency'
 
 interface Transaction {
   id: string
@@ -334,6 +335,7 @@ function EditTransactionModal({ transaction, categories, onClose, onSaved }: {
 
 export default function TransactionsPage() {
   const router = useRouter()
+  const fmt = useCurrencyStore(s => s.fmt)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
@@ -438,16 +440,16 @@ export default function TransactionsPage() {
       <div className="grid grid-cols-3 gap-4">
         <div className="card p-4 border-l-4 border-emerald-400 min-w-0 overflow-hidden">
           <p className="text-xs text-slate-500">Ingresos</p>
-          <p className="text-xs font-bold text-emerald-600 mt-0.5 sm:text-xl truncate">${income.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
+          <p className="text-xs font-bold text-emerald-600 mt-0.5 sm:text-xl truncate">{fmt(income)}</p>
         </div>
         <div className="card p-4 border-l-4 border-red-400 min-w-0 overflow-hidden">
           <p className="text-xs text-slate-500">Gastos</p>
-          <p className="text-xs font-bold text-red-600 mt-0.5 sm:text-xl truncate">${expenses.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
+          <p className="text-xs font-bold text-red-600 mt-0.5 sm:text-xl truncate">{fmt(expenses)}</p>
         </div>
         <div className="card p-4 border-l-4 border-blue-400 min-w-0 overflow-hidden">
           <p className="text-xs text-slate-500">Balance</p>
           <p className={`text-xs font-bold mt-0.5 sm:text-xl truncate ${(income - expenses) >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-            ${(income - expenses).toLocaleString('es-MX', { maximumFractionDigits: 0 })}
+            {fmt(income - expenses)}
           </p>
         </div>
       </div>
