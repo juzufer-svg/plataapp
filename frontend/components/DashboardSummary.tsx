@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useCurrencyStore } from '@/store/currency'
 
 interface SummaryCardProps {
   title: string
@@ -8,6 +9,7 @@ interface SummaryCardProps {
 }
 
 function SummaryCard({ title, value, type }: SummaryCardProps) {
+  const fmt = useCurrencyStore(s => s.fmt)
   const config = {
     ingreso: {
       gradient: 'from-emerald-500 to-teal-600',
@@ -58,7 +60,7 @@ function SummaryCard({ title, value, type }: SummaryCardProps) {
           </div>
         </div>
         <p className={`text-3xl font-bold tracking-tight ${isNegative ? 'text-red-600' : 'text-slate-900'}`}>
-          ${value.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
+          {fmt(value)}
         </p>
         <p className="text-xs text-slate-400 mt-1">Período actual</p>
       </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useCurrencyStore } from '@/store/currency'
 
 interface GoalProgressCardProps {
   nombre: string
@@ -10,6 +11,7 @@ interface GoalProgressCardProps {
 }
 
 export default function GoalProgressCard({ nombre, objetivo, actual, fechaObjetivo, onEdit, onDelete }: GoalProgressCardProps) {
+  const fmt = useCurrencyStore(s => s.fmt)
   const percentage = objetivo > 0 ? Math.min((actual / objetivo) * 100, 100) : 0
   const inDays = Math.ceil((new Date(fechaObjetivo).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
   const completed = percentage >= 100
@@ -57,9 +59,9 @@ export default function GoalProgressCard({ nombre, objetivo, actual, fechaObjeti
       {/* Stats */}
       <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
         {[
-          { label: 'Ahorrado', value: `$${actual.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: 'text-blue-600' },
-          { label: 'Objetivo', value: `$${objetivo.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: 'text-slate-900' },
-          { label: 'Falta', value: `$${Math.max(0, objetivo - actual).toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: completed ? 'text-emerald-600' : 'text-amber-600' },
+          { label: 'Ahorrado', value: fmt(actual), color: 'text-blue-600' },
+          { label: 'Objetivo', value: fmt(objetivo), color: 'text-slate-900' },
+          { label: 'Falta', value: fmt(Math.max(0, objetivo - actual)), color: completed ? 'text-emerald-600' : 'text-amber-600' },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-slate-50 rounded-lg p-2 text-center min-w-0">
             <p className="text-[10px] sm:text-xs text-slate-400 font-medium truncate">{label}</p>

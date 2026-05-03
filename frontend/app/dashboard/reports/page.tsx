@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { useCurrencyStore } from '@/store/currency'
 
 export default function ReportsPage() {
   const router = useRouter()
@@ -57,6 +58,7 @@ export default function ReportsPage() {
     }
   }
 
+  const fmt = useCurrencyStore(s => s.fmt)
   const savingsRate = stats.totalIngresos > 0
     ? ((stats.balance / stats.totalIngresos) * 100).toFixed(1)
     : '0.0'
@@ -65,22 +67,22 @@ export default function ReportsPage() {
     : '0.0'
 
   const statCards = [
-    { label: 'Total Ingresos', value: `$${stats.totalIngresos.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: 'text-emerald-600', border: 'border-emerald-400', bg: 'bg-emerald-50', icon: (
+    { label: 'Total Ingresos', value: fmt(stats.totalIngresos), color: 'text-emerald-600', border: 'border-emerald-400', bg: 'bg-emerald-50', icon: (
       <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.519l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
       </svg>
     )},
-    { label: 'Total Gastos', value: `$${stats.totalGastos.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: 'text-red-600', border: 'border-red-400', bg: 'bg-red-50', icon: (
+    { label: 'Total Gastos', value: fmt(stats.totalGastos), color: 'text-red-600', border: 'border-red-400', bg: 'bg-red-50', icon: (
       <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 6 9 12.75l4.286-4.286a11.948 11.948 0 0 1 4.306 6.43l.776 2.898m0 0 3.182-5.511m-3.182 5.51-5.511-3.181" />
       </svg>
     )},
-    { label: 'Balance Neto', value: `$${stats.balance.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: stats.balance >= 0 ? 'text-blue-600' : 'text-orange-600', border: stats.balance >= 0 ? 'border-blue-400' : 'border-orange-400', bg: stats.balance >= 0 ? 'bg-blue-50' : 'bg-orange-50', icon: (
+    { label: 'Balance Neto', value: fmt(stats.balance), color: stats.balance >= 0 ? 'text-blue-600' : 'text-orange-600', border: stats.balance >= 0 ? 'border-blue-400' : 'border-orange-400', bg: stats.balance >= 0 ? 'bg-blue-50' : 'bg-orange-50', icon: (
       <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
       </svg>
     )},
-    { label: 'Gasto Diario Prom.', value: `$${stats.promedioMesGastos.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: 'text-violet-600', border: 'border-violet-400', bg: 'bg-violet-50', icon: (
+    { label: 'Gasto Diario Prom.', value: fmt(stats.promedioMesGastos), color: 'text-violet-600', border: 'border-violet-400', bg: 'bg-violet-50', icon: (
       <svg className="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
       </svg>
@@ -150,7 +152,7 @@ export default function ReportsPage() {
                 <div>
                   <p className="text-2xl font-bold text-slate-900">{stats.categoriaConMasGasto.nombre}</p>
                   <p className="text-sm text-red-600 font-semibold mt-1">
-                    ${stats.categoriaConMasGasto.monto.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
+                    {fmt(stats.categoriaConMasGasto.monto)}
                   </p>
                 </div>
                 <div className="w-14 h-14 bg-red-50 rounded-xl flex items-center justify-center">
@@ -176,7 +178,7 @@ export default function ReportsPage() {
                   { label: 'Total de transacciones', value: String(transactions.length), color: '' },
                   { label: 'Tasa de gasto', value: `${expenseRate}%`, color: parseFloat(expenseRate) > 90 ? 'text-red-600' : 'text-slate-900' },
                   { label: 'Tasa de ahorro', value: `${savingsRate}%`, color: parseFloat(savingsRate) > 0 ? 'text-emerald-600' : 'text-red-600' },
-                  { label: 'Ahorro neto', value: `$${stats.balance.toLocaleString('es-MX', { maximumFractionDigits: 0 })}`, color: stats.balance >= 0 ? 'text-emerald-600' : 'text-red-600' },
+                  { label: 'Ahorro neto', value: fmt(stats.balance), color: stats.balance >= 0 ? 'text-emerald-600' : 'text-red-600' },
                 ].map(({ label, value, color }) => (
                   <div key={label} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
                     <span className="text-sm text-slate-500">{label}</span>

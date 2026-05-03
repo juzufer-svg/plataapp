@@ -1,4 +1,5 @@
 import React from 'react'
+import { useCurrencyStore } from '@/store/currency'
 
 interface TransactionListProps {
   transactions: any[]
@@ -27,6 +28,7 @@ function CategoryIcon({ tipo }: { tipo: string }) {
 }
 
 export default function TransactionList({ transactions, categories, onDelete, onEdit }: TransactionListProps) {
+  const fmt = useCurrencyStore(s => s.fmt)
   const getCategoryName = (categoryId: string) =>
     categories.find(c => c.id === categoryId)?.nombre || 'Sin categoría'
 
@@ -75,8 +77,7 @@ export default function TransactionList({ transactions, categories, onDelete, on
             <p className={`text-sm font-bold ${
               transaction.tipo === 'ingreso' ? 'text-emerald-600' : 'text-red-600'
             }`}>
-              {transaction.tipo === 'ingreso' ? '+' : '-'}$
-              {transaction.monto.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
+              {transaction.tipo === 'ingreso' ? '+' : '-'}{fmt(transaction.monto)}
             </p>
             {onEdit && (
               <button

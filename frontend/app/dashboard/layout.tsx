@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useAuthStore } from '@/store/auth'
 import { useThemeStore } from '@/store/theme'
+import { useCurrencyStore } from '@/store/currency'
 import FinanzyLogo from '@/components/FinanzyLogo'
 import apiClient from '@/lib/api-client'
 
@@ -82,10 +83,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [hydrated, setHydrated] = useState(false)
   const { isAuthenticated, logout, user, loadAuth, setUser } = useAuthStore()
   const { dark } = useThemeStore()
+  const { loadRates, initBaseCurrency } = useCurrencyStore()
 
   useEffect(() => {
     loadAuth()
     setHydrated(true)
+    loadRates()
   }, [])
 
   // Si el usuario ya tiene sesión pero no tiene full_name (sesión antigua), lo carga desde la API
@@ -95,6 +98,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       .then(res => {
         if (res.data?.full_name) {
           setUser({ ...user, full_name: res.data.full_name })
+        }
+        // Establecer moneda base una sola vez (la moneda en que se guardaron los datos)
+        if (res.data?.currency) {
+          initBaseCurrency(res.data.currency)
         }
       })
       .catch(() => {})

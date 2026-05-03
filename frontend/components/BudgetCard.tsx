@@ -1,4 +1,5 @@
 import React from 'react'
+import { useCurrencyStore } from '@/store/currency'
 
 interface BudgetCardProps {
   categoria: string
@@ -10,6 +11,7 @@ interface BudgetCardProps {
 }
 
 export default function BudgetCard({ categoria, limite, gastado, onEdit, onDelete }: BudgetCardProps) {
+  const fmt = useCurrencyStore(s => s.fmt)
   const percentage = limite > 0 ? Math.min((gastado / limite) * 100, 100) : 0
   const remaining = limite - gastado
 
@@ -37,13 +39,13 @@ export default function BudgetCard({ categoria, limite, gastado, onEdit, onDelet
         </div>
         <div className="flex-shrink-0 text-right ml-2 min-w-0 max-w-[45%]">
           <p className="text-xs text-slate-400 uppercase tracking-wide">Límite</p>
-          <p className="text-sm sm:text-lg font-bold text-slate-900 truncate">${limite.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
+          <p className="text-sm sm:text-lg font-bold text-slate-900 truncate">{fmt(limite)}</p>
         </div>
       </div>
 
       <div className="space-y-2 mb-4">
         <div className="flex justify-between text-xs text-slate-500">
-          <span>Gastado: <span className="font-semibold text-slate-700">${gastado.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</span></span>
+          <span>Gastado: <span className="font-semibold text-slate-700">{fmt(gastado)}</span></span>
           <span className="font-semibold">{percentage.toFixed(0)}%</span>
         </div>
         <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -57,7 +59,7 @@ export default function BudgetCard({ categoria, limite, gastado, onEdit, onDelet
       <div className={`flex items-center justify-between p-3 rounded-lg ${remaining >= 0 ? 'bg-slate-50' : 'bg-red-50'}`}>
         <span className="text-xs text-slate-500">{remaining >= 0 ? 'Disponible' : 'Excedido'}</span>
         <span className={`text-sm font-bold ${remaining >= 0 ? 'text-slate-900' : 'text-red-600'}`}>
-          ${Math.abs(remaining).toLocaleString('es-MX', { maximumFractionDigits: 0 })}
+          {fmt(Math.abs(remaining))}
         </span>
       </div>
 
