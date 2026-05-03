@@ -23,25 +23,16 @@ function readStorage(key: string, fallback: string): string {
 function getInitialBaseCurrency(): string {
   if (typeof window === 'undefined') return 'COP'
 
-  const storedBase = localStorage.getItem('base_currency')
-  const storedCurrency = localStorage.getItem('currency')
   const migrated = localStorage.getItem('base_currency_migrated_v2') === '1'
 
-  if (!storedBase) {
+  // Force one-time migration to COP for existing persisted amounts.
+  if (!migrated) {
     localStorage.setItem('base_currency', 'COP')
     localStorage.setItem('base_currency_migrated_v2', '1')
     return 'COP'
   }
 
-  // Previous logic stored base currency equal to display currency.
-  // For existing data in this app, amounts are persisted in COP.
-  if (!migrated && storedBase === storedCurrency) {
-    localStorage.setItem('base_currency', 'COP')
-    localStorage.setItem('base_currency_migrated_v2', '1')
-    return 'COP'
-  }
-
-  return storedBase
+  return localStorage.getItem('base_currency') ?? 'COP'
 }
 
 export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
