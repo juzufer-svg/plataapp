@@ -38,7 +38,10 @@ export default function ProfilePage() {
     apiClient.get('/api/v1/users/me')
       .then(res => {
         setUserInfo(res.data)
-        if (res.data.currency) {
+        // Keep local selection as source of truth for UI display currency.
+        // Only hydrate from backend if there is no local value yet.
+        const hasLocalCurrency = typeof window !== 'undefined' && !!localStorage.getItem('currency')
+        if (res.data.currency && !hasLocalCurrency) {
           setCurrencyRef.current(res.data.currency)
         }
       })
