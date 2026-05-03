@@ -15,6 +15,8 @@ interface CurrencyStore {
   convert: (amount: number) => number
 }
 
+type CurrencySnapshot = Pick<CurrencyStore, 'currency' | 'baseCurrency' | 'rates'>
+
 function readStorage(key: string, fallback: string): string {
   if (typeof window === 'undefined') return fallback
   return localStorage.getItem(key) ?? fallback
@@ -35,6 +37,16 @@ function getInitialBaseCurrency(): string {
   return localStorage.getItem('base_currency') ?? 'COP'
 }
 
+function buildConverter(snapshot: CurrencySnapshot) {
+  const r = Object.keys(snapshot.rates).length ? snapshot.rates : FALLBACK_RATES
+  return (amount: number) => convertAmount(amount, snapshot.baseCurrency, snapshot.currency, r)
+}
+
+function buildFormatter(snapshot: CurrencySnapshot) {
+  const convert = buildConverter(snapshot)
+  return (amount: number) => formatAmount(convert(amount), snapshot.currency)
+}
+
 export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
   currency: readStorage('currency', 'USD'),
   baseCurrency: getInitialBaseCurrency(),
@@ -43,7 +55,17 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
 
   setCurrency: (currency: string) => {
     if (typeof window !== 'undefined') localStorage.setItem('currency', currency)
-    set({ currency })
+    const state = get()
+    const snapshot: CurrencySnapshot = {
+      currency,
+      baseCurrency: state.baseCurrency,
+      rates: state.rates,
+    }
+    set({
+      currency,
+      convert: buildConverter(snapshot),
+      fmt: buildFormatter(snapshot),
+    })
   },
 
   // Optional helper for future use; current app data base is COP.
@@ -52,28 +74,48 @@ export const useCurrencyStore = create<CurrencyStore>((set, get) => ({
     if (!localStorage.getItem('base_currency')) {
       localStorage.setItem('base_currency', currency)
       localStorage.setItem('base_currency_migrated_v2', '1')
-      set({ baseCurrency: currency })
+      const state = get()
+      const snapshot: CurrencySnapshot = {
+        currency: state.currency,
+        baseCurrency: currency,
+        rates: state.rates,
+      }
+      set({
+        baseCurrency: currency,
+        convert: buildConverter(snapshot),
+        fmt: buildFormatter(snapshot),
+      })
     }
   },
 
   loadRates: async () => {
     if (get().ratesLoaded) return
     const rates = await fetchRates()
-    set({ rates, ratesLoaded: true })
+    const state = get()
+    const snapshot: CurrencySnapshot = {
+      currency: state.currency,
+      baseCurrency: state.baseCurrency,
+      rates,
+    }
+    set({
+      rates,
+      ratesLoaded: true,
+      convert: buildConverter(snapshot),
+      fmt: buildFormatter(snapshot),
+    })
   },
 
-  convert: (amount: number) => {
-    const { currency, baseCurrency, rates } = get()
-    const r = Object.keys(rates).length ? rates : FALLBACK_RATES
-    return convertAmount(amount, baseCurrency, currency, r)
-  },
+  convert: buildConverter({
+    currency: readStorage('currency', 'USD'),
+    baseCurrency: getInitialBaseCurrency(),
+    rates: {},
+  }),
 
-  fmt: (amount: number) => {
-    const { currency, baseCurrency, rates } = get()
-    const r = Object.keys(rates).length ? rates : FALLBACK_RATES
-    const converted = convertAmount(amount, baseCurrency, currency, r)
-    return formatAmount(converted, currency)
-  },
+  fmt: buildFormatter({
+    currency: readStorage('currency', 'USD'),
+    baseCurrency: getInitialBaseCurrency(),
+    rates: {},
+  }),
 }))
 
 // Currency symbols
