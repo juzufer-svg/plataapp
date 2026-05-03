@@ -7,8 +7,13 @@ interface CurrencyStore {
   setCurrency: (currency: string) => void
 }
 
+function loadCurrency(): string {
+  if (typeof window === 'undefined') return 'USD'
+  return localStorage.getItem('currency') || 'USD'
+}
+
 export const useCurrencyStore = create<CurrencyStore>((set) => ({
-  currency: 'USD',
+  currency: loadCurrency(),
   setCurrency: (currency: string) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('currency', currency)

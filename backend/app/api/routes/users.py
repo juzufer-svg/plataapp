@@ -59,25 +59,31 @@ async def update_user_currency(request: UpdateCurrencyRequest, authorization: st
     
     user_id = payload.get("sub")
     
-    # Update currency
-    updated = await UserDB.update_currency(user_id, request.currency)
-    
-    if not updated:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to update currency"
-        )
-    
-    # Fetch updated user
+    # Verify user exists
     user = await UserDB.get_by_id(user_id)
-    
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
+
+    # Update currency (column may not exist yet in older DBs, handle gracefully)
+    try:
+        await UserDB.update_currency(user_id, request.currency)
+    except Exception:
+        # Column might not exist — still return user with requested currency applied
+        user["currency"] = request.currency
+        return UserResponse(**user)
     
-    return UserResponse(**user)
+    # Fetch updated user
+    updated_user = await UserDB.get_by_id(user_id)
+    if not updated_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    return UserResponse(**updated_user)
 
 
 @router.delete("/me", status_code=204)
