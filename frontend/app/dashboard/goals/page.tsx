@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import GoalProgressCard from '@/components/GoalProgressCard'
 import { useRouter } from 'next/navigation'
+import { useCurrencyStore } from '@/store/currency'
 
 interface Goal {
   id: string
@@ -104,6 +105,7 @@ function EditGoalModal({ goal, onClose, onSaved }: { goal: Goal; onClose: () => 
 
 export default function GoalsPage() {
   const router = useRouter()
+  const fmt = useCurrencyStore(s => s.fmt)
   const [goals, setGoals] = useState<Goal[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -185,11 +187,11 @@ export default function GoalsPage() {
         <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <div className="card p-3 sm:p-4 border-l-4 border-blue-400 min-w-0">
             <p className="text-[10px] sm:text-xs text-slate-500 truncate">Total Objetivo</p>
-            <p className="text-sm sm:text-lg font-bold text-slate-900 mt-0.5 truncate">${totalObjetivo.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
+            <p className="text-sm sm:text-lg font-bold text-slate-900 mt-0.5 truncate">{fmt(totalObjetivo)}</p>
           </div>
           <div className="card p-3 sm:p-4 border-l-4 border-emerald-400 min-w-0">
             <p className="text-[10px] sm:text-xs text-slate-500 truncate">Total Ahorrado</p>
-            <p className="text-sm sm:text-lg font-bold text-emerald-600 mt-0.5 truncate">${totalAhorrado.toLocaleString('es-MX', { maximumFractionDigits: 0 })}</p>
+            <p className="text-sm sm:text-lg font-bold text-emerald-600 mt-0.5 truncate">{fmt(totalAhorrado)}</p>
           </div>
           <div className="card p-3 sm:p-4 border-l-4 border-violet-400 min-w-0">
             <p className="text-[10px] sm:text-xs text-slate-500 truncate">Completadas</p>
