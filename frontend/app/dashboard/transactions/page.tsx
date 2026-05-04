@@ -333,6 +333,200 @@ function EditTransactionModal({ transaction, categories, onClose, onSaved }: {
   )
 }
 
+function CategorizedView({
+  transactions,
+  categories,
+  loading,
+  onDelete,
+  onEdit,
+  fmt,
+}: {
+  transactions: Transaction[]
+  categories: Category[]
+  loading: boolean
+  onDelete: (id: string) => void
+  onEdit: (t: Transaction) => void
+  fmt: (n: number) => string
+}) {
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({})
+  const [activeTab, setActiveTab] = useState<'todos' | 'gasto' | 'ingreso'>('todos')
+
+  const toggle = (id: string) => setExpanded(p => ({ ...p, [id]: !p[id] }))
+
+  const filteredTxs = activeTab === 'todos' ? transactions : transactions.filter(t => t.tipo === activeTab)
+
+  // Group by category
+  const groups = categories
+    .map(cat => {
+      const txs = filteredTxs.filter(t => t.categoria_id === cat.id)
+      if (txs.length === 0) return null
+      const total = txs.reduce((s, t) => s + t.monto, 0)
+      return { cat, txs, total }
+    })
+    .filter(Boolean) as { cat: Category; txs: Transaction[]; total: number }[]
+
+  // Transactions with no matching category
+  const uncategorized = filteredTxs.filter(t => !categories.find(c => c.id === t.categoria_id))
+
+  return (
+    <div className="space-y-4">
+      {/* Tabs */}
+      <div className="flex gap-1.5">
+        {(['todos', 'gasto', 'ingreso'] as const).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`text-xs px-4 py-1.5 rounded-full font-semibold transition-all ${
+              activeTab === tab ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            {tab === 'todos' ? 'Todos' : tab === 'gasto' ? '↓ Gastos' : '↑ Ingresos'}
+          </button>
+        ))}
+        <span className="ml-auto text-xs text-slate-400 self-center">{filteredTxs.length} registros</span>
+      </div>
+
+      {/* Content */}
+      {loading ? (
+        <div className="flex items-center justify-center py-16">
+          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : groups.length === 0 && uncategorized.length === 0 ? (
+        <div className="card flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+            </svg>
+          </div>
+          <h3 className="text-base font-semibold text-slate-700">Sin transacciones</h3>
+          <p className="text-sm text-slate-400 mt-1">No hay registros en este período</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {groups.map(({ cat, txs, total }) => {
+            const isOpen = !!expanded[cat.id]
+            const isGasto = cat.tipo === 'gasto'
+            return (
+              <div
+                key={cat.id}
+                className={`card overflow-hidden border-l-4 transition-all ${
+                  isGasto ? 'border-red-400' : 'border-emerald-400'
+                }`}
+              >
+                {/* Card header — clickable to expand */}
+                <button
+                  className="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-left"
+                  onClick={() => toggle(cat.id)}
+                >
+                  <span className="text-2xl flex-shrink-0">{cat.icono || '📁'}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-slate-900 truncate">{cat.nombre}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      {txs.length} {txs.length === 1 ? 'transacción' : 'transacciones'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span
+                      className={`text-base font-bold ${isGasto ? 'text-red-600' : 'text-emerald-600'}`}
+                    >
+                      {isGasto ? '-' : '+'}{fmt(total)}
+                    </span>
+                    <svg
+                      className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </div>
+                </button>
+
+                {/* Expanded transactions */}
+                {isOpen && (
+                  <div className="border-t border-slate-100 divide-y divide-slate-50">
+                    {txs
+                      .sort((a, b) => b.fecha.localeCompare(a.fecha))
+                      .map(tx => (
+                        <div key={tx.id} className="flex items-center gap-3 px-4 py-3 bg-slate-50/50 group">
+                          <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isGasto ? 'bg-red-400' : 'bg-emerald-400'}`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-slate-700 truncate">
+                              {tx.descripcion || cat.nombre}
+                            </p>
+                            <p className="text-xs text-slate-400">{tx.fecha}</p>
+                          </div>
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <span className={`text-xs font-bold ${isGasto ? 'text-red-600' : 'text-emerald-600'}`}>
+                              {isGasto ? '-' : '+'}{fmt(tx.monto)}
+                            </span>
+                            <button
+                              onClick={() => onEdit(tx)}
+                              className="p-1 hover:bg-blue-100 rounded text-slate-300 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all"
+                              title="Editar"
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => onDelete(tx.id)}
+                              className="p-1 hover:bg-red-100 rounded text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                              title="Eliminar"
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+
+          {/* Uncategorized fallback */}
+          {uncategorized.length > 0 && (
+            <div className="card overflow-hidden border-l-4 border-slate-300">
+              <button
+                className="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-left"
+                onClick={() => toggle('__uncategorized__')}
+              >
+                <span className="text-2xl flex-shrink-0">📁</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-slate-900">Sin categoría</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{uncategorized.length} transacciones</p>
+                </div>
+                <svg
+                  className={`w-4 h-4 text-slate-400 transition-transform ${expanded['__uncategorized__'] ? 'rotate-180' : ''}`}
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+              {expanded['__uncategorized__'] && (
+                <div className="border-t border-slate-100 divide-y divide-slate-50">
+                  {uncategorized.map(tx => (
+                    <div key={tx.id} className="flex items-center gap-3 px-4 py-3 bg-slate-50/50 group">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-slate-700 truncate">{tx.descripcion || '—'}</p>
+                        <p className="text-xs text-slate-400">{tx.fecha}</p>
+                      </div>
+                      <span className={`text-xs font-bold ${tx.tipo === 'gasto' ? 'text-red-600' : 'text-emerald-600'}`}>
+                        {tx.tipo === 'gasto' ? '-' : '+'}{fmt(tx.monto)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function TransactionsPage() {
   const router = useRouter()
   const fmt = useCurrencyStore(s => s.fmt)
@@ -460,23 +654,14 @@ export default function TransactionsPage() {
           <TransactionForm categories={categories} onSuccess={fetchData} />
         </div>
         <div className="lg:col-span-2">
-          <div className="card p-5">
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-              <h2 className="text-sm font-bold text-slate-900">
-                Historial
-                <span className="ml-2 px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded-full font-normal">
-                  {transactions.length} registros
-                </span>
-              </h2>
-            </div>
-            {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-              </div>
-            ) : (
-              <TransactionList transactions={transactions} categories={categories} onDelete={handleDelete} onEdit={setEditingTransaction} />
-            )}
-          </div>
+          <CategorizedView
+            transactions={transactions}
+            categories={categories}
+            loading={loading}
+            onDelete={handleDelete}
+            onEdit={setEditingTransaction}
+            fmt={fmt}
+          />
         </div>
       </div>
     </div>
