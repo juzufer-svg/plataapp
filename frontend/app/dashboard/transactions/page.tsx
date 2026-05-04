@@ -377,7 +377,7 @@ function CategorizedView({
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`text-xs px-4 py-1.5 rounded-full font-semibold transition-all ${
-              activeTab === tab ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              activeTab === tab ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
             {tab === 'todos' ? 'Todos' : tab === 'gasto' ? '↓ Gastos' : '↑ Ingresos'}
@@ -415,7 +415,7 @@ function CategorizedView({
               >
                 {/* Card header — clickable to expand */}
                 <button
-                  className="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-left"
                   onClick={() => toggle(cat.id)}
                 >
                   <span className="text-2xl flex-shrink-0">{cat.icono || '📁'}</span>
@@ -446,7 +446,7 @@ function CategorizedView({
                     {txs
                       .sort((a, b) => b.fecha.localeCompare(a.fecha))
                       .map(tx => (
-                        <div key={tx.id} className="flex items-center gap-3 px-4 py-3 bg-slate-50/50 group">
+                        <div key={tx.id} className="flex items-center gap-3 px-4 py-3 bg-slate-50/50 dark:bg-slate-700/30 group">
                           <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isGasto ? 'bg-red-400' : 'bg-emerald-400'}`} />
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-semibold text-slate-700 truncate">
@@ -460,7 +460,7 @@ function CategorizedView({
                             </span>
                             <button
                               onClick={() => onEdit(tx)}
-                              className="p-1 hover:bg-blue-100 rounded text-slate-300 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all"
+                              className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-all"
                               title="Editar"
                             >
                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,7 +469,7 @@ function CategorizedView({
                             </button>
                             <button
                               onClick={() => onDelete(tx.id)}
-                              className="p-1 hover:bg-red-100 rounded text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                              className="p-1 hover:bg-red-100 dark:hover:bg-red-900/40 rounded text-slate-300 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
                               title="Eliminar"
                             >
                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -489,7 +489,7 @@ function CategorizedView({
           {uncategorized.length > 0 && (
             <div className="card overflow-hidden border-l-4 border-slate-300">
               <button
-                className="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-left"
+                className="w-full flex items-center gap-3 p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-left"
                 onClick={() => toggle('__uncategorized__')}
               >
                 <span className="text-2xl flex-shrink-0">📁</span>
@@ -507,7 +507,7 @@ function CategorizedView({
               {expanded['__uncategorized__'] && (
                 <div className="border-t border-slate-100 divide-y divide-slate-50">
                   {uncategorized.map(tx => (
-                    <div key={tx.id} className="flex items-center gap-3 px-4 py-3 bg-slate-50/50 group">
+                    <div key={tx.id} className="flex items-center gap-3 px-4 py-3 bg-slate-50/50 dark:bg-slate-700/30 group">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-slate-700 truncate">{tx.descripcion || '—'}</p>
                         <p className="text-xs text-slate-400">{tx.fecha}</p>

@@ -146,6 +146,15 @@ body {
   @apply bg-slate-800 border-slate-700/60;
 }
 
+/* Dividers */
+.dark .divide-slate-50 > * + * { border-color: #334155 !important; }
+
+/* Fondos hover que no tienen override por ser hover: variant */
+.dark .bg-blue-100  { background-color: rgba(37,99,235,0.15)  !important; }
+.dark .bg-red-100   { background-color: rgba(220,38,38,0.15)  !important; }
+.dark .bg-emerald-100 { background-color: rgba(16,185,129,0.15) !important; }
+.dark .bg-slate-200 { background-color: #334155 !important; }
+
 /* Page texts */
 .dark .page-title    { @apply text-white; }
 .dark .page-subtitle { @apply text-slate-400; }
