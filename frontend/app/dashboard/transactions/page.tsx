@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import apiClient from '@/lib/api-client'
 import TransactionForm from '@/components/TransactionForm'
 import TransactionList from '@/components/TransactionList'
 import { useRouter } from 'next/navigation'
@@ -69,8 +69,7 @@ function CategoriesManagerModal({ onClose, onChanged }: { onClose: () => void; o
   const fetchCategories = async () => {
     setLoadingCats(true)
     try {
-      const token = localStorage.getItem('token')
-      const res = await axios.get('/api/v1/categorias', { headers: { Authorization: `Bearer ${token}` } })
+      const res = await apiClient.get('/api/v1/categorias')
       setCategories(res.data)
     } catch { } finally { setLoadingCats(false) }
   }
@@ -94,11 +93,10 @@ function CategoriesManagerModal({ onClose, onChanged }: { onClose: () => void; o
     setSaving(true)
     setError('')
     try {
-      const token = localStorage.getItem('token')
       if (editingId) {
-        await axios.put(`/api/v1/categorias/${editingId}`, formData, { headers: { Authorization: `Bearer ${token}` } })
+        await apiClient.put(`/api/v1/categorias/${editingId}`, formData)
       } else {
-        await axios.post('/api/v1/categorias', formData, { headers: { Authorization: `Bearer ${token}` } })
+        await apiClient.post('/api/v1/categorias', formData)
       }
       await fetchCategories()
       onChanged()
@@ -112,8 +110,7 @@ function CategoriesManagerModal({ onClose, onChanged }: { onClose: () => void; o
   const handleDelete = async (id: string) => {
     if (!window.confirm('¿Eliminar esta categoría?')) return
     try {
-      const token = localStorage.getItem('token')
-      await axios.delete(`/api/v1/categorias/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+      await apiClient.delete(`/api/v1/categorias/${id}`)
       setCategories(prev => prev.filter(c => c.id !== id))
       onChanged()
     } catch (err: any) {
@@ -259,10 +256,10 @@ function EditTransactionModal({ transaction, categories, onClose, onSaved }: {
     setError('')
     try {
       const token = localStorage.getItem('token')
-      await axios.put(`/api/v1/transacciones/${transaction.id}`, {
+      await apiClient.put(`/api/v1/transacciones/${transaction.id}`, {
         ...formData,
         monto: parseFloat(formData.monto)
-      }, { headers: { Authorization: `Bearer ${token}` } })
+      })
       onSaved()
       onClose()
     } catch {
@@ -547,10 +544,9 @@ export default function TransactionsPage() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
       const [transRes, catRes] = await Promise.all([
-        axios.get(`/api/v1/transacciones?mes=${currentMonth}`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('/api/v1/categorias', { headers: { Authorization: `Bearer ${token}` } })
+        apiClient.get(`/api/v1/transacciones?mes=${currentMonth}`),
+        apiClient.get('/api/v1/categorias')
       ])
       setTransactions(transRes.data)
       setCategories(catRes.data)
@@ -563,8 +559,7 @@ export default function TransactionsPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const token = localStorage.getItem('token')
-      await axios.delete(`/api/v1/transacciones/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+      await apiClient.delete(`/api/v1/transacciones/${id}`)
       setTransactions(transactions.filter(t => t.id !== id))
     } catch (error) {
       console.error('Error:', error)

@@ -8,9 +8,10 @@ interface GoalProgressCardProps {
   fechaObjetivo: string
   onEdit?: () => void
   onDelete?: () => void
+  onAbonar?: () => void
 }
 
-export default function GoalProgressCard({ nombre, objetivo, actual, fechaObjetivo, onEdit, onDelete }: GoalProgressCardProps) {
+export default function GoalProgressCard({ nombre, objetivo, actual, fechaObjetivo, onEdit, onDelete, onAbonar }: GoalProgressCardProps) {
   const fmt = useCurrencyStore(s => s.fmt)
   const percentage = objetivo > 0 ? Math.min((actual / objetivo) * 100, 100) : 0
   const inDays = Math.ceil((new Date(fechaObjetivo).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
@@ -70,8 +71,17 @@ export default function GoalProgressCard({ nombre, objetivo, actual, fechaObjeti
         ))}
       </div>
 
-      {(onEdit || onDelete) && (
+      {(onEdit || onDelete || onAbonar) && (
         <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
+          {onAbonar && (
+            <button onClick={onAbonar}
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold text-white bg-emerald-500 hover:bg-emerald-600 rounded-lg transition-all">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Abonar
+            </button>
+          )}
           {onEdit && (
             <button onClick={onEdit}
               className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">

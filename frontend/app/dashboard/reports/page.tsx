@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import apiClient from '@/lib/api-client'
 import { useRouter } from 'next/navigation'
 import { useCurrencyStore } from '@/store/currency'
 
@@ -26,10 +26,9 @@ export default function ReportsPage() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
       const [transRes, catRes] = await Promise.all([
-        axios.get(`/api/v1/transacciones?mes=${currentMonth}`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('/api/v1/categorias', { headers: { Authorization: `Bearer ${token}` } })
+        apiClient.get(`/api/v1/transacciones?mes=${currentMonth}`),
+        apiClient.get('/api/v1/categorias')
       ])
       const trans = transRes.data
       const cats = catRes.data

@@ -6,7 +6,7 @@ from app.schemas.plataapp import (
     TransaccionCreate, TransaccionResponse, ResumenTransacciones,
     CategoriaCreate, CategoriaUpdate, CategoriaResponse,
     PresupuestoCreate, PresupuestoResponse, PresupuestoUpdate,
-    MetaCreate, MetaResponse, ActualizarMeta
+    MetaCreate, MetaResponse, ActualizarMeta, AbonarMeta
 )
 from app.models.plataapp import TransaccionDB, CategoriaDB, PresupuestoDB, MetaDB
 from app.core.security import decode_token
@@ -197,3 +197,38 @@ async def eliminar_meta(meta_id: str, authorization: str = Header(...)):
     get_user_id(authorization)
     await MetaDB.eliminar(meta_id)
     return {"message": "Meta eliminada"}
+
+
+@router.post("/metas/{meta_id}/abonar", response_model=MetaResponse)
+async def abonar_meta(meta_id: str, datos: AbonarMeta, authorization: str = Header(...)):
+    """Registra un aporte a una meta: crea transacción de gasto y aumenta monto_actual."""
+    usuario_id = get_user_id(authorization)
+
+    # Buscar o crear la categoría especial "Ahorro"
+    categorias = await CategoriaDB.obtener_por_usuario(usuario_id)
+    cat_ahorro = next((c for c in categorias if c["nombre"] == "Ahorro"), None)
+    if not cat_ahorro:
+        cat_ahorro = await CategoriaDB.crear(usuario_id, "Ahorro", "🐷", "gasto")
+
+    # Registrar la transacción como gasto
+    await TransaccionDB.crear(
+        usuario_id=usuario_id,
+        categoria_id=cat_ahorro["id"],
+        monto=datos.monto,
+        descripcion=datos.descripcion,
+        fecha=datos.fecha,
+        tipo="gasto"
+    )
+
+    # Incrementar el monto_actual de la meta
+    meta = await MetaDB.obtener_por_id(meta_id)
+    if not meta:
+        raise HTTPException(status_code=404, detail="Meta no encontrada")
+    nuevo_monto = float(meta["monto_actual"]) + datos.monto
+    meta_actualizada = await MetaDB.actualizar_progreso(meta_id, {"monto_actual": nuevo_monto})
+
+    porcentaje = (
+        meta_actualizada["monto_actual"] / meta_actualizada["monto_objetivo"] * 100
+        if meta_actualizada["monto_objetivo"] > 0 else 0
+    )
+    return {**meta_actualizada, "porcentaje_completado": porcentaje}

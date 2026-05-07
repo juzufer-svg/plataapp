@@ -235,6 +235,11 @@ class DemoMetaDB:
     async def obtener_por_usuario(usuario_id: str) -> list:
         """Get user goals"""
         return [m for m in DemoMetaDB._metas.values() if m["usuario_id"] == usuario_id]
+
+    @staticmethod
+    async def obtener_por_id(meta_id: str) -> dict:
+        """Get goal by ID"""
+        return DemoMetaDB._metas.get(meta_id)
     
     @staticmethod
     async def actualizar_progreso(meta_id: str, updates: dict) -> dict:

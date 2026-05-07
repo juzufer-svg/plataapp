@@ -107,3 +107,10 @@ class ActualizarMeta(BaseModel):
     monto_objetivo: Optional[float] = None
     monto_actual: Optional[float] = None
     fecha_objetivo: Optional[str] = None
+
+
+class AbonarMeta(BaseModel):
+    """Abonar un monto a una meta de ahorro"""
+    monto: float
+    descripcion: str = "Abono a meta de ahorro"
+    fecha: str

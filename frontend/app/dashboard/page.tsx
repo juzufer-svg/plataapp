@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import axios from 'axios'
+import apiClient from '@/lib/api-client'
 import DashboardSummary from '@/components/DashboardSummary'
 import TransactionList from '@/components/TransactionList'
 import { useRouter } from 'next/navigation'
@@ -23,10 +23,9 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token')
       const [transRes, catRes] = await Promise.all([
-        axios.get(`/api/v1/transacciones?mes=${currentMonth}`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('/api/v1/categorias', { headers: { Authorization: `Bearer ${token}` } })
+        apiClient.get(`/api/v1/transacciones?mes=${currentMonth}`),
+        apiClient.get('/api/v1/categorias')
       ])
       setTransactions(transRes.data)
       setCategories(catRes.data)

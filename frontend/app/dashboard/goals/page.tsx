@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import apiClient from '@/lib/api-client'
 import GoalProgressCard from '@/components/GoalProgressCard'
 import { useRouter } from 'next/navigation'
 import { useCurrencyStore } from '@/store/currency'
@@ -12,6 +12,108 @@ interface Goal {
   monto_objetivo: number
   monto_actual: number
   fecha_objetivo: string
+}
+
+function AbonarModal({ goal, onClose, onSaved }: { goal: Goal; onClose: () => void; onSaved: () => void }) {
+  const fmt = useCurrencyStore(s => s.fmt)
+  const falta = Math.max(0, goal.monto_objetivo - goal.monto_actual)
+  const today = new Date().toISOString().split('T')[0]
+  const [monto, setMonto] = useState('')
+  const [descripcion, setDescripcion] = useState(`Abono a meta: ${goal.nombre}`)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const m = parseFloat(monto)
+    if (m <= 0) { setError('El monto debe ser mayor a 0'); return }
+    setSaving(true)
+    setError('')
+    try {
+      await apiClient.post(`/api/v1/metas/${goal.id}/abonar`, {
+        monto: m,
+        descripcion,
+        fecha: today,
+      })
+      onSaved()
+      onClose()
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Error al registrar el abono')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-base font-bold text-slate-900">Abonar a meta</h2>
+            <p className="text-xs text-slate-500 mt-0.5 truncate max-w-[200px]">{goal.nombre}</p>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="flex gap-2 mb-5">
+          <div className="flex-1 bg-emerald-50 rounded-xl p-3 text-center">
+            <p className="text-[10px] text-slate-500 font-medium">Ahorrado</p>
+            <p className="text-sm font-bold text-emerald-600 mt-0.5">{fmt(goal.monto_actual)}</p>
+          </div>
+          <div className="flex-1 bg-amber-50 rounded-xl p-3 text-center">
+            <p className="text-[10px] text-slate-500 font-medium">Falta</p>
+            <p className="text-sm font-bold text-amber-600 mt-0.5">{fmt(falta)}</p>
+          </div>
+          <div className="flex-1 bg-blue-50 rounded-xl p-3 text-center">
+            <p className="text-[10px] text-slate-500 font-medium">Objetivo</p>
+            <p className="text-sm font-bold text-blue-600 mt-0.5">{fmt(goal.monto_objetivo)}</p>
+          </div>
+        </div>
+
+        {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Monto a abonar</label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-sm">$</span>
+              <input
+                type="number" value={monto} autoFocus required step="0.01" min="0.01"
+                onChange={e => setMonto(e.target.value)}
+                className="w-full pl-8 pr-3 py-2.5 text-sm border-2 border-slate-200 rounded-lg focus:border-emerald-500 focus:outline-none"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Descripción</label>
+            <input
+              type="text" value={descripcion}
+              onChange={e => setDescripcion(e.target.value)}
+              className="w-full px-3 py-2.5 text-sm border-2 border-slate-200 rounded-lg focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <p className="text-[11px] text-slate-400">
+            💡 Se registrará como un gasto en la categoría <strong>Ahorro</strong> y se descontará de tu balance disponible.
+          </p>
+          <div className="flex gap-3 pt-1">
+            <button type="button" onClick={onClose}
+              className="flex-1 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">
+              Cancelar
+            </button>
+            <button type="submit" disabled={saving}
+              className="flex-1 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 rounded-xl transition-all">
+              {saving ? 'Guardando...' : 'Confirmar abono'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
 }
 
 function EditGoalModal({ goal, onClose, onSaved }: { goal: Goal; onClose: () => void; onSaved: () => void }) {
@@ -27,13 +129,12 @@ function EditGoalModal({ goal, onClose, onSaved }: { goal: Goal; onClose: () => 
     e.preventDefault()
     setSaving(true)
     try {
-      const token = localStorage.getItem('token')
-      await axios.put(`/api/v1/metas/${goal.id}`, {
+      await apiClient.put(`/api/v1/metas/${goal.id}`, {
         nombre: formData.nombre,
         monto_objetivo: parseFloat(formData.monto_objetivo),
         monto_actual: parseFloat(formData.monto_actual),
         fecha_objetivo: formData.fecha_objetivo,
-      }, { headers: { Authorization: `Bearer ${token}` } })
+      })
       onSaved()
       onClose()
     } catch (error) {
@@ -112,6 +213,7 @@ export default function GoalsPage() {
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({ nombre: '', monto_objetivo: '', fecha_objetivo: '' })
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null)
+  const [abonarGoal, setAbonarGoal] = useState<Goal | null>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -121,8 +223,7 @@ export default function GoalsPage() {
 
   const fetchGoals = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const res = await axios.get('/api/v1/metas', { headers: { Authorization: `Bearer ${token}` } })
+      const res = await apiClient.get('/api/v1/metas')
       setGoals(res.data)
     } catch (error) {
       console.error('Error:', error)
@@ -135,11 +236,10 @@ export default function GoalsPage() {
     e.preventDefault()
     setSaving(true)
     try {
-      const token = localStorage.getItem('token')
-      await axios.post('/api/v1/metas', {
+      await apiClient.post('/api/v1/metas', {
         ...formData,
         monto_objetivo: parseFloat(formData.monto_objetivo)
-      }, { headers: { Authorization: `Bearer ${token}` } })
+      })
       await fetchGoals()
       setShowForm(false)
       setFormData({ nombre: '', monto_objetivo: '', fecha_objetivo: '' })
@@ -153,8 +253,7 @@ export default function GoalsPage() {
   const handleDeleteGoal = async (goalId: string) => {
     if (!confirm('¿Eliminar esta meta?')) return
     try {
-      const token = localStorage.getItem('token')
-      await axios.delete(`/api/v1/metas/${goalId}`, { headers: { Authorization: `Bearer ${token}` } })
+      await apiClient.delete(`/api/v1/metas/${goalId}`)
       setGoals(goals.filter(g => g.id !== goalId))
     } catch (error) {
       console.error('Error:', error)
@@ -168,6 +267,7 @@ export default function GoalsPage() {
   return (
     <div className="space-y-6">
       {editingGoal && <EditGoalModal goal={editingGoal} onClose={() => setEditingGoal(null)} onSaved={fetchGoals} />}
+      {abonarGoal && <AbonarModal goal={abonarGoal} onClose={() => setAbonarGoal(null)} onSaved={fetchGoals} />}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="page-header mb-0">
@@ -262,6 +362,7 @@ export default function GoalsPage() {
               objetivo={goal.monto_objetivo}
               actual={goal.monto_actual}
               fechaObjetivo={goal.fecha_objetivo}
+              onAbonar={() => setAbonarGoal(goal)}
               onEdit={() => setEditingGoal(goal)}
               onDelete={() => handleDeleteGoal(goal.id)}
             />

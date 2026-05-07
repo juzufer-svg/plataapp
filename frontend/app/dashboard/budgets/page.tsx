@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import apiClient from '@/lib/api-client'
 import BudgetCard from '@/components/BudgetCard'
 import { useRouter } from 'next/navigation'
 
@@ -44,10 +44,9 @@ function EditBudgetModal({ budget, categories, onClose, onSaved }: {
     setLoading(true)
     setError('')
     try {
-      const token = localStorage.getItem('token')
-      await axios.put(`/api/v1/presupuestos/${budget.id}`, {
+      await apiClient.put(`/api/v1/presupuestos/${budget.id}`, {
         limite_mensual: parseFloat(limite)
-      }, { headers: { Authorization: `Bearer ${token}` } })
+      })
       onSaved()
       onClose()
     } catch {
@@ -110,11 +109,10 @@ export default function BudgetsPage() {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token')
       const [budRes, transRes, catRes] = await Promise.all([
-        axios.get(`/api/v1/presupuestos/${currentMonth}`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`/api/v1/transacciones?mes=${currentMonth}`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('/api/v1/categorias', { headers: { Authorization: `Bearer ${token}` } })
+        apiClient.get(`/api/v1/presupuestos/${currentMonth}`),
+        apiClient.get(`/api/v1/transacciones?mes=${currentMonth}`),
+        apiClient.get('/api/v1/categorias')
       ])
       setBudgets(budRes.data)
       setTransactions(transRes.data)
@@ -130,12 +128,11 @@ export default function BudgetsPage() {
     e.preventDefault()
     setSaving(true)
     try {
-      const token = localStorage.getItem('token')
-      await axios.post('/api/v1/presupuestos', {
+      await apiClient.post('/api/v1/presupuestos', {
         ...formData,
         limite_mensual: parseFloat(formData.limite_mensual),
         mes_ano: currentMonth
-      }, { headers: { Authorization: `Bearer ${token}` } })
+      })
       await fetchData()
       setShowForm(false)
       setFormData({ categoria_id: '', limite_mensual: '' })
@@ -148,8 +145,7 @@ export default function BudgetsPage() {
 
   const handleDeleteBudget = async (id: string) => {
     try {
-      const token = localStorage.getItem('token')
-      await axios.delete(`/api/v1/presupuestos/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+      await apiClient.delete(`/api/v1/presupuestos/${id}`)
       setBudgets(budgets.filter(b => b.id !== id))
     } catch (error) {
       console.error('Error:', error)

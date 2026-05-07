@@ -303,6 +303,18 @@ class MetaDB:
             return await DemoMetaDB.obtener_por_usuario(usuario_id)
 
     @staticmethod
+    async def obtener_por_id(meta_id: str) -> dict:
+        if not _supabase_ok():
+            return await DemoMetaDB.obtener_por_id(meta_id)
+        try:
+            client = SupabaseDB.get_client()
+            result = client.table("metas").select("*").eq("id", meta_id).limit(1).execute()
+            return result.data[0] if result.data else None
+        except Exception as e:
+            print(f"[Supabase] metas.obtener_por_id error: {e}")
+            return await DemoMetaDB.obtener_por_id(meta_id)
+
+    @staticmethod
     async def actualizar_progreso(meta_id: str, updates: dict) -> dict:
         if not _supabase_ok():
             return await DemoMetaDB.actualizar_progreso(meta_id, updates)
